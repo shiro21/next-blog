@@ -1,0 +1,158 @@
+@import "./color";
+
+// [id] Post Page
+.post_wrap {
+    display: flex;
+    margin-bottom: 3rem;
+    .post_contents {
+        padding: 2rem;
+        margin-top: 7rem;
+    }
+}
+
+.contents_item {
+    position: relative;
+    padding: .5rem;
+    padding-top: 3.5rem;
+    margin-bottom: 3rem;
+    border: 1px solid #DDD;
+    > h2 {
+        font-size: $font_size_300;
+        font-weight: $font_weight_semibold;
+        margin-bottom: 1rem;
+    }
+    .item_create {
+        position: absolute;
+        top: -24px;
+        right: 0;
+        background: $gray_color;
+        color: $white_color;
+        padding: .5rem;
+        border-radius: 8px;
+    }
+    .item_tag {
+        position: absolute;
+        top: 16px;
+        right: 0;
+        color: $gray_color;
+        font-size: $font_size_100;
+        > span {
+            padding-right: .5rem;
+        }
+    }
+    .item_content {
+        font-size: $font_size_300;
+        margin-bottom: 1rem;
+    }
+    .item_like {
+        margin-bottom: 2rem;
+    }
+    .category_list_wrap {
+        margin-bottom: 1rem;
+        > ul {
+            border: 1px solid #DDD;
+            padding: 1rem;
+            > li {
+                &:first-child {
+                    font-size: $font_size_300;
+                    font-weight: $font_weight_semibold;
+                    border-bottom: 1px solid #DDD;
+                    padding-bottom: .5rem;
+                    margin-bottom: .5rem;
+                    > span { color: $sub_color; }
+                }
+            }
+        }
+    }
+    .write_options {
+        margin-bottom: 1rem;
+        > ul {
+            display: flex;
+            justify-content: center;
+            > li { padding: 0 .5rem; font-size: $font_size_200; cursor: pointer; }
+        }
+    }
+    .comments_wrap {
+        display: flex;
+        position: relative;
+        padding-bottom: 5rem;
+        .comments_info {
+            display: flex;
+            flex-direction: column;
+            padding-right: 1rem;
+            > input {
+                width: 100px;
+                margin-bottom: 1rem;
+                &:last-child { margin-bottom: 0; }
+            }
+        }
+        > textarea {
+            width: calc(100% - 100px);
+            height: 150px;
+            resize: none;
+            border-radius: 8px;
+            border: 2px solid #DDD;
+            padding: .5rem;
+        }
+        .comments_button_wrap {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+            font-size: $font_size_300;
+            > label { padding-right: .5rem; }
+            > button {
+                margin-left: 1rem;
+                font-size: $font_size_300;
+            }
+        }
+    }
+    .comments_list_wrap {
+        > ul {
+            > li {
+                border-bottom: 1px solid #DDD;
+                padding-bottom: .5rem;
+                margin-bottom: .5rem;
+            }
+        }
+        .comments_info {
+            position: relative;
+            font-size: $font_size_300;
+            font-weight: $font_weight_semibold;
+            margin-bottom: .5rem;
+            > span {
+                position: absolute;
+                top: 0;
+                right: 0;
+                font-size: $font_size_100;
+                color: $gray_color;
+                font-weight: $font_weight_normal;
+            }
+        }
+        .comments {
+            font-size: $font_size_200;
+        }
+        .comments_control {
+            text-align: right;
+            > button {
+                margin-right: .5rem;
+                cursor: pointer;
+                &:last-child { margin-right: 0; }
+            }
+        }
+    }
+}
+
+// PostLists
+.post_lists {
+    font-size: $font_size_200;
+    padding-bottom: .5rem;
+    border-bottom: 1px dashed #DDD;
+    margin-bottom: .5rem;
+    > a {}
+    > span {
+        word-break: break-all;
+        float: right;
+    }
+}

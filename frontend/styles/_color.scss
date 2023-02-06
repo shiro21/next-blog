@@ -1,0 +1,27 @@
+$main_color: #4AA8D8;
+$sub_color: #B55727;
+$gray_color: #919191;
+$white_color: #FFFFFF;
+$gray_light_color: #EEEEEE;
+
+// font-size
+$font_size_600: 36px;
+$font_size_500: 28px;
+$font_size_400: 20px;
+$font_size_300: 16px;
+$font_size_200: 14px;
+$font_size_100: 12px;
+
+@media screen and (min-width: 960px) {
+    $font_size_600: 40px;
+    $font_size_500: 32px;
+    $font_size_400: 24px;
+    $font_size_300: 20px;
+    $font_size_200: 18px;
+    $font_size_100: 16px;
+}
+
+// font-weight
+$font_weight_bold: 700;
+$font_weight_semibold: 600;
+$font_weight_normal: 400;

@@ -1,0 +1,47 @@
+## Project Name
+NextJS 블로그 | 기간: 2023.02.02 ~
+* 날짜 ( 프로젝트 진행한 날짜 )
+02.02, 02.06
+
+- 참고: 티스토리
+
+## Tool
+- Front-End: NextJS ( TypeScript )
+- Back-End: NodeJS ( Javascript )
+- Notion, 공책 ( 정리용 )
+
+## Color
+- https://encycolorpedia.kr/
+
+Main Color: #4AA8D8 ( 밝은 파랑 )
+Sub Color: #B55727 ( 반전 컬러 )
+
+## Pages
+
+## Login, Register
+- 회원가입, 로그인 연습용
+- Redux Toolkit + Redux-persist ( 로그인 유지용 )
+- dribbble 참조: https://dribbble.com/shots/19811417--Edupark-Sign-up-page
+
+## Main
+- 
+
+
+### npm install
+npm install @reduxjs/toolkit react-redux
+npm install --save-dev sass
+npm install axios
+
+<!-- 폰트어썸 -->
+npm install @fortawesome/fontawesome-svg-core
+npm install @fortawesome/react-fontawesome
+npm install @fortawesome/free-solid-svg-icons
+
+<!-- 차트JS -->
+npm install react-chartjs-2 chart.js
+<!-- 임시 데이터를 위해서 -->
+npm i @faker-js/faker
+
+
+<!-- Font Awesome Free -->
+npm install -S @fortawesome/fontawesome-svg-core @fortawesome/react-fontawesome @fortawesome/free-regular-svg-icons @fortawesome/free-solid-svg-icons @fortawesome/free-brands-svg-icons
