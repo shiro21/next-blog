@@ -1,10 +1,11 @@
 import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppContext, AppProps } from 'next/app'
 import Layout from './components/Layout'
 import { Provider } from 'react-redux'
 import { store } from '@/store/store'
+import { NextPageContext } from 'next'
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <Layout>
@@ -13,3 +14,10 @@ export default function App({ Component, pageProps }: AppProps) {
     </Provider>
   )
 }
+
+export async function getServerSideProps(context: any) {
+  const cookie = context.req ? context.req.headers.cookie : "";
+  console.log(cookie)
+}
+
+export default App;

@@ -32,6 +32,15 @@ npm install @reduxjs/toolkit react-redux
 npm install --save-dev sass
 npm install axios
 
+npm install cookie
+npm install @types/cookie
+npm install @types/js-cookie
+npm install react-cookies next-cookies
+npm install @types/react-cookies
+
+<!-- NEXT Auth ( https://next-auth.js.org/ ) -->
+npm install next-auth
+
 <!-- 폰트어썸 -->
 npm install @fortawesome/fontawesome-svg-core
 npm install @fortawesome/react-fontawesome

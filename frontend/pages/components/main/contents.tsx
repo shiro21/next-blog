@@ -1,6 +1,6 @@
 import styles from '@/styles/main.module.scss'
 import { fakedata } from '@/pages/api/fakeData';
-import { PostProps } from '@/pages/api/interface';
+import { PostProps } from '@/pages/services/interface';
 import { useEffect } from 'react';
 import { postsList } from '@/features/postSlice';
 

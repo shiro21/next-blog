@@ -44,7 +44,7 @@
     > p { font-size: $font_size_200; font-weight: $font_weight_semibold; margin-bottom: 2rem; }
     .input_wrap {
         margin-bottom: 1rem;
-        > label { display: block; font-size: $font_size_300; font-weight: $font_weight_semibold; margin-bottom: .5rem; }
+        > label { display: block; font-size: $font_size_300; font-weight: $font_weight_semibold; margin-bottom: 10px; }
         > button {
             width: 100%;
             height: 2rem;

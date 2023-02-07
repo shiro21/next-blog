@@ -1,5 +1,5 @@
 import styles from '@/styles/_post.module.scss';
-import { PostProps } from "@/pages/api/interface";
+import { PostProps } from "@/pages/services/interface";
 import Link from 'next/link';
 
 const PostLists = ({ item }: { item: PostProps }) => {

@@ -1,6 +1,10 @@
 import styles from '@/styles/manage.module.scss'
+import { useState } from 'react';
 
 const CategoryManage = () => {
+
+    const [category, setCategory] = useState();
+    
     return (
         <>
             <div className={styles.category_wrap}>

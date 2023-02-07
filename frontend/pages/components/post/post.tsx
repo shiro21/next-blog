@@ -1,4 +1,4 @@
-import { PostProps } from '@/pages/api/interface';
+import { PostProps } from '@/pages/services/interface';
 import styles from '@/styles/_post.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons';
@@ -52,8 +52,8 @@ const Post = ({item}: { item: PostProps}) => {
             {/* 댓글 */}
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_info}>
-                    <input type="text" placeholder="닉네임" />
-                    <input type="password" placeholder="비밀번호" />
+                    <input type="text" placeholder="닉네임" autoComplete="off" />
+                    <input type="password" placeholder="비밀번호" autoComplete="off" />
                 </div>
                 <textarea />
                 

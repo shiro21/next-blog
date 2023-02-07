@@ -4,10 +4,13 @@ import favi from '@/public/favi.ico'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import React, { ChangeEvent, useState } from 'react';
-import { RegisterProps } from './api/interface';
-import { api } from './api/api';
+import { RegisterProps } from './services/interface';
+import { api } from './services/api';
+import { useRouter } from 'next/router';
 
 const Register = () => {
+
+    const router = useRouter();
 
     const [formData, setFormData] = useState<RegisterProps>({
         _id: "",
@@ -32,7 +35,8 @@ const Register = () => {
 
         await api.post("/user/emailConfirm", { email: formData.email })
         .then(res => {
-            if (res.data.code === "y") setMailCheck(String(res.data.data));
+            if (res.data.code === "email") return alert(res.data.message);
+            else if (res.data.code === "y") setMailCheck(String(res.data.data));
         })
         .catch(err => console.log("Email Err", err));
     }
@@ -54,6 +58,15 @@ const Register = () => {
         else if (formData.name.length <= 2) return alert("닉네임을 3글자 이상 입력해주세요.");
 
         api.post("/user/create", formData)
+        .then(res => {
+            if (res.data.code === "id") return alert(res.data.message);
+            else if (res.data.code === "y") {
+                sessionStorage.setItem("@nextjs-blog-token", res.data.token);
+                sessionStorage.setItem("@nextjs-blog-user", res.data.user);
+                router.push("/");
+            }
+        })
+        .catch(err => console.log("Register Err", err));
     }
 
     return (
@@ -90,10 +103,10 @@ const Register = () => {
                     <input type="password" id="passwordConfirm" name="passwordConfirm" value={formData.passwordConfirm} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, passwordConfirm: e.target.value})} />
                 </div>
 
-                <div className={styles.input_wrap}>
+                <div className={styles.input_wrap} style={{position: "relative"}}>
                     <label htmlFor="email">이메일을 입력해주세요.</label>
-                    <input style={{marginBottom: "10px"}} type="email" id="email" name="email" value={formData.email} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value})} />
-                    <button type="button" onClick={emailConfirm}>확인</button>
+                    <input style={{marginBottom: "10px", marginRight: "100px", paddingRight: "100px"}} type="email" id="email" name="email" value={formData.email} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value})} />
+                    <button style={{position: "absolute", top: "34px", right: "0", width: "80px", zIndex: "1", borderRadius: "0 8px 8px 0" }} type="button" onClick={emailConfirm}>확인</button>
                     <input type="text" value={mailConfirmCheck} onChange={(e: ChangeEvent<HTMLInputElement>) => setMailConfirmCheck(String(e.target.value))} />
                 </div>
 
@@ -103,7 +116,7 @@ const Register = () => {
                 </div>
 
                 <div className={styles.input_wrap}>
-                    <button type="submit">로그인</button>
+                    <button type="submit">회원가입</button>
                 </div>
             </form>
         </section>

@@ -9,7 +9,7 @@ export interface UserProps {
     profile: string,
     createdAt: string,
     updatedAt: string
-}
+};
 export interface RegisterProps {
     _id: string,
     id: string,
@@ -23,6 +23,15 @@ export interface RegisterProps {
     profile: string,
     createdAt: string,
     updatedAt: string
+};
+export interface LoginProps {
+    id: string,
+    password: string
+};
+
+// Category
+export interface CategoryProps {
+    
 }
 
 // Post
@@ -39,8 +48,7 @@ export interface PostListsProps {
             updatedAt: string
         }
     ]
-}
-
+};
 export interface PostProps {
     _id: string
     id: number
@@ -50,4 +58,4 @@ export interface PostProps {
     tag: string[]
     createdAt: string
     updatedAt: string
-}
+};

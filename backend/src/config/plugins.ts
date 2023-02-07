@@ -2,5 +2,8 @@
 
 import mongoose from "mongoose";
 import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
 
-export { mongoose, nodemailer };
+import * as crypto from "crypto";
+
+export { mongoose, nodemailer, crypto, jwt };

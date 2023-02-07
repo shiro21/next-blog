@@ -4,11 +4,60 @@ import favi from '@/public/favi.ico'
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { ChangeEvent, useState } from 'react';
+import { LoginProps } from '@/pages/services/interface';
+import { api } from '@/pages/services/api';
+import { useRouter } from 'next/router';
+import { setTokenCookie } from './tokenCookies';
 
 const LoginForm = () => {
 
-    const onSubmit = () => {
+    const router = useRouter();
 
+    const [formData, setFormData] = useState<LoginProps>({
+        id: "",
+        password: ""
+    });
+    const [autoSave, setAutoSave] = useState<boolean>(false);
+
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (formData.id === "" || formData.password === "") return alert("아이디와 비밀번호를 입력해주세요.");
+        api.post("/user/login", formData)
+        .then(res => {
+            if (res.data.code === "id") {
+
+                setFormData({id: "", password: ""});
+                return alert(res.data.message);
+
+            } else if (res.data.code === "password") {
+                
+                setFormData({id: "", password: ""});
+                return alert(res.data.message);
+
+            } else if (res.data.code === "y") {
+
+                setTokenCookie(res.data.token);
+                
+                if (autoSave) {
+                    // localStorage.setItem("@nextjs-blog-token", res.data.token);
+                    // localStorage.setItem("@nextjs-blog-user", res.data.user);
+
+                    // sessionStorage.removeItem("@nextjs-blog-token");
+                    // sessionStorage.removeItem("@nextjs-blog-user");
+                } else {
+                    // sessionStorage.setItem("@nextjs-blog-token", res.data.token);
+                    // sessionStorage.setItem("@nextjs-blog-user", res.data.user);
+
+                    // localStorage.removeItem("@nextjs-blog-token");
+                    // localStorage.removeItem("@nextjs-blog-user");
+                }
+
+                router.push("/");
+            }
+        })
+        .catch(err => console.log("Login Err", err));
     }
 
     return (
@@ -32,17 +81,17 @@ const LoginForm = () => {
 
                 <div className={styles.input_wrap}>
                     <label htmlFor="id">아이디를 입력해주세요.</label>
-                    <input type="text" id="id" name="id" />
+                    <input type="text" id="id" name="id" value={formData.id} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({...formData, id: e.target.value.replace(/[^\\!-z]/gi,"")})} />
                 </div>
 
                 <div className={styles.input_wrap}>
                     <label htmlFor="password">비밀번호를 입력해주세요.</label>
-                    <input type="password" id="password" name="password" />
+                    <input type="password" id="password" name="password" value={formData.password} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value})} />
                 </div>
 
                 <div className={styles.find_wrap}>
                     <div>
-                        <input type="checkbox" id="save" name="save" />
+                        <input type="checkbox" id="save" name="save" checked={autoSave} onChange={() => setAutoSave(prev => !prev)} />
                         <label htmlFor="save">자동 로그인</label>
                     </div>
                     <div>
