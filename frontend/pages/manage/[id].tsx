@@ -9,15 +9,25 @@ import Seo from '../components/Seo';
 import CategoryManage from '../components/manage/category';
 import LinkManage from '../components/manage/link';
 import WriteManage from '../components/manage/write';
+import { api } from '../services/api';
+import { GetServerSideProps } from 'next';
+import { useEffect } from 'react';
+import { UserProps } from '../services/interface';
 
-const Manage = () => {
+const Manage = ({ userData }: { userData: UserProps}) => {
 
     const router = useRouter();
+
+    useEffect(() => {
+        if (!userData.success) router.push("/login");
+    }, [router])
 
     return (
         <>
             <Seo title="관리자" />
-            <ManageHeader />
+            {
+                userData.success && <ManageHeader userData={userData} />
+            }
 
             <article className={styles.manage_wrap}>
                 <ManageSide />
@@ -52,3 +62,28 @@ const Manage = () => {
 };
 
 export default Manage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  
+    const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
+  
+    let userData = { success: false, user: null };
+  
+    if (isToken === "") userData = { success: false, user: null };
+    else {
+        try {
+          await api.post("/user/decode", { token: isToken })
+          .then(res => {
+            if (res.data.code === "y") userData = { success: true, user: res.data.data.user };
+          })
+          .catch(err => console.log("Token Decode Err", err));
+        
+        } catch (err) {
+          console.log(err);
+        };
+    }
+    
+    return {
+      props: { userData }
+    }
+}

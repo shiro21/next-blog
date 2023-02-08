@@ -84,7 +84,8 @@
                     border: 1px solid #DDD;
                     border-radius: 4px;
                     padding: .5rem;
-                    > h4 { text-align: left; border-bottom: 1px solid #DDD; }
+                    background: $white_color;
+                    > h4 { text-align: left; border-bottom: 1px solid #DDD; font-size: $font_size_300; font-weight: $font_weight_semibold; padding-bottom: .5rem; margin-bottom: .5rem; }
                     .notice {
                         > ul {
                             > li {
@@ -103,7 +104,24 @@
                     width: 250px;
                     border: 1px solid #DDD;
                     border-radius: 4px;
-                    padding: .5rem;
+                    padding: 1rem;
+                    background: $white_color;
+                    .profile_name {
+                        font-size: $font_size_300;
+                        font-weight: $font_weight_semibold;
+                        border-bottom: 1px solid #DDD;
+                        padding-bottom: .5rem;
+                        margin-bottom: .5rem;
+                        > span {
+                            font-size: $font_size_100;
+                            font-weight: $font_weight_normal;
+                            color: $gray_color;
+                        }
+                    }
+                    > button {
+                        color: $gray_color;
+                        cursor: pointer;
+                    }
                 }
             }
         }

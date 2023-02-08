@@ -1,7 +1,7 @@
 ## Project Name
 NextJS 블로그 | 기간: 2023.02.02 ~
 * 날짜 ( 프로젝트 진행한 날짜 )
-02.02, 02.06
+02.02, 02.06, 02.07, 02.08
 
 - 참고: 티스토리
 
@@ -37,6 +37,10 @@ npm install @types/cookie
 npm install @types/js-cookie
 npm install react-cookies next-cookies
 npm install @types/react-cookies
+
+<!-- 에디터 ( SummerNote -> react-quill을 많이 사용한다고 하여 체택 ) -->
+npm uninstall @types/summernote
+npm install react-quill
 
 <!-- NEXT Auth ( https://next-auth.js.org/ ) -->
 npm install next-auth

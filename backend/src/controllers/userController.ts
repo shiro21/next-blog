@@ -136,7 +136,25 @@ router.post("/login", (req: Request, res: Response) => {
         }
     })
     .catch(err => console.log("User Login Err", err));
+});
 
+router.post("/decode", (req: Request, res: Response) => {
+    const { token } = req.body;
+
+    const decoded = jwt.decode(token, { complete: true });
+
+    if (decoded === null) {
+        res.status(200).json({
+            code: "n",
+            message: "토큰 에러"
+        });        
+    } else {
+        console.log("여기로 들어옴");
+        res.status(200).json({
+            code: "y",
+            data: decoded.payload
+        });
+    }
 });
 
 export default router;

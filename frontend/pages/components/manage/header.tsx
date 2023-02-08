@@ -6,8 +6,21 @@ import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { UserProps } from '@/pages/services/interface';
+import { removeTokenCookie } from '../login/tokenCookies';
+import { useState } from 'react';
 
-const ManageHeader = () => {
+const ManageHeader = ({ userData }: { userData: UserProps }) => {
+    
+    const { id, email, name, profile } = userData.user;
+    const [profileInfo, setProfileInfo] = useState<boolean>(false);
+    const [noticeInfo, setNoticeInfo] = useState<boolean>(false);
+
+
+    const logOut = () => {
+        removeTokenCookie();
+    }
+
     return (
         <header className={styles.header_wrap}>
             <div className={styles.header_item_wrap}>
@@ -29,38 +42,45 @@ const ManageHeader = () => {
                 <div className={styles.header_item}>
                     <div className={styles.button_wrap}>
                         <button type="button" className={styles.write_button}><Link href={"/write"}>글쓰기</Link></button>
-                        <button type="button" className={styles.notice_button}>
+                        <button type="button" className={styles.notice_button} onClick={() => setNoticeInfo(prev => !prev)}>
                             <FontAwesomeIcon icon={faBell} width={24} height={24} />
                         </button>
-                        <button type="button" className={styles.profile_button}>
-                            <Image src={favi} width={40} height={40} alt="로고" />
+                        <button type="button" className={styles.profile_button} onClick={() => setProfileInfo(prev => !prev)}>
+                            <Image src={profile} style={{borderRadius: "50%", objectFit: "cover"}} width={40} height={40} alt="로고" />
                         </button>
 
                         {/* 알림 */}
-                        {/* <div className={styles.notice_wrap}>
-                            <h4>새로운 소식</h4>
-                            <div className={styles.notice}>
-                                <ul>
-                                    <li>
-                                        <div style={{flex: "1"}}>
-                                            닉네임님이 댓글을 남겼습니다.<br />
-                                            "항상 잘 보고 있습니다."
-                                        </div>
-                                        <div style={{width: "80px"}}>
-                                            2023.02.03
-                                        </div>
-                                    </li>
-                                </ul>
+                        {
+                            noticeInfo && <div className={styles.notice_wrap}>
+                                <h4>새로운 소식</h4>
+                                <div className={styles.notice}>
+                                    <ul>
+                                        <li>
+                                            <div style={{flex: "1"}}>
+                                                닉네임님이 댓글을 남겼습니다.<br />
+                                                "항상 잘 보고 있습니다."
+                                            </div>
+                                            <div style={{width: "80px"}}>
+                                                2023.02.03
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div> */}
+                        }
+                        
 
                         {/* 프로필 관련 */}
-                        {/* <div className={styles.profile_wrap}>
-                            <div>shiro21</div>
-                            <span>junhyeok403@naver.com</span>
-                            <div>로그아웃</div>
-                        </div> */}
-
+                        {
+                            profileInfo && <div className={styles.profile_wrap}>
+                                <div className={styles.profile_name}>
+                                    {id}<span style={{paddingLeft: "4px"}}>{name}</span><br />
+                                    <span>{email}</span>
+                                </div>
+                                
+                                <button type="button" onClick={logOut}>로그아웃</button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

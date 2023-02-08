@@ -1,14 +1,19 @@
 // User
 export interface UserProps {
-    _id: string,
-    id: string,
-    type: string,
-    role: string,
-    roleLabel: string,
-    name: string,
-    profile: string,
-    createdAt: string,
-    updatedAt: string
+    user: {
+        _id: string,
+        id: string,
+        email: string,
+        isDeleted: boolean,
+        type: string,
+        role: string,
+        roleLabel: string,
+        name: string,
+        profile: string,
+        createdAt: string,
+        updatedAt: string
+    },
+    success: boolean
 };
 export interface RegisterProps {
     _id: string,
