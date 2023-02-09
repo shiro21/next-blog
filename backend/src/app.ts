@@ -3,6 +3,9 @@ import "dotenv/config";
 
 const app = express();
 
+import http from "http";
+const server = http.createServer(app);
+
 import cors from "cors";
 app.use(cors({ origin: "*" }));
 
@@ -20,6 +23,12 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("양호");
     console.log(req.cookies);
 });
+
+// import * as functions from 'firebase-functions';
+
+// export const helloWorld = functions.https.onRequest((req, resp) => {
+//  resp.send("Hello from Firebase!");
+// });
 
 // MongoDB Conn
 import mongoose from "mongoose";
@@ -42,7 +51,8 @@ import routes from "./config/routes";
 app.use("/api", routes);
 
 const PORT = process.env.NODE_PORT || 4000;
-app.listen(PORT, () => {
+
+server.listen(PORT, () => {
     const message = `
         [ Shiro21 Blog Project ]
         Running PORT: localhost:${PORT}
@@ -50,3 +60,11 @@ app.listen(PORT, () => {
 
     console.log(message);
 });
+// app.listen(PORT, () => {
+//     const message = `
+//         [ Shiro21 Blog Project ]
+//         Running PORT: localhost:${PORT}
+//     `;
+
+//     console.log(message);
+// });

@@ -24,9 +24,13 @@ npm install --save @types/nodemailer
 <!-- Multer -->
 npm install multer
 npm install @types/multer
+<!-- Firebase -->
+npm install multer-firebase-storage
+npm uninstall firebase-functions
 
 <!-- 아직 미설치 -->
-npm install @firebase/app-types
+npm uninstall @firebase/app-types
+npm install firebase/app-types
 
 <!-- 현재 해결해야할 문제 -->
 nodejs firebase deploy
@@ -40,10 +44,14 @@ npm run dev
 
 ## Firebase
 npm install firebase
+npm install @types/firebase
 npm install -g firebase-tools
 firebase login
+
+firebase init functions
 firebase init
 firebase deploy
+nextjs-blog-server -> npm run deploy
 
 <!-- add 추가, list 아이디 확인, use 변경 -->
 firebase login:add
@@ -62,3 +70,4 @@ firebase deploy --only hosting # deploy as alice@example.com
 
 firebase init
 firebase deploy
+firebase deploy --only hosting

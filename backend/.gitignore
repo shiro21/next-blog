@@ -128,3 +128,5 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+nextjs-blog-server-firebase-adminsdk-f3l4g-0efa5e0e7c.json
