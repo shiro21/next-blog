@@ -1,11 +1,11 @@
 import * as React from 'react';
-import axios from 'axios';
 import { NextPage } from 'next';
 
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { RangeStatic } from 'quill';
 import { api } from '@/pages/services/api';
+import Image from 'next/image';
+import ReactQuill from 'react-quill';
 
 interface IEditor {
     htmlStr: string;
@@ -27,31 +27,26 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr}) => {
             const file = input.files;
             const formData = new FormData();
 
-            if(file) {
-                formData.append("multipartFiles", file[0]);
-                formData.append("body", "hello");
-            }
+            if(file) formData.append("multipartFiles", file[0]);
 
-            // api.post("/edit/fileAdd", formData)
             // file 데이터 담아서 서버에 전달하여 이미지 업로드
             await api.post("/edit/fileAdd", formData)
-            // .then(edit => {
-            //     console.log(edit);
-
-            //     if(quillRef.current) {
-            //         // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
-            //         const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
+            .then(edit => {
+                if(quillRef.current) {
+                    // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
+                    const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
     
-            //         const quillEditor = quillRef.current.getEditor();
-            //         quillEditor.setSelection(index, 1);
+                    const quillEditor = quillRef.current.getEditor();
+                    quillEditor.setSelection(index, 1);
     
-            //         quillEditor.clipboard.dangerouslyPasteHTML(
-            //             index,
-            //             `<img src=https://firebasestorage.googleapis.com/v0/b/nextjs-blog-server.appspot.com/o/${edit.data.data[0].path} alt=${'alt text'} />`
-            //         );
-            //     }
-            // })
-            // .catch(err => console.log("Edit Image Err", err));
+                    quillEditor.clipboard.dangerouslyPasteHTML(
+                        index,
+                        // `<img style="width: 150px; height: 150px;" alt="helloworld" src=${edit.data.data} />`
+                        `<Image style="width: 150px; height: 150px;" alt="helloworld" src=${edit.data.data} />`
+                    );
+                }
+            })
+            .catch(err => console.log("Edit Image Err", err));
 
         }
     }
@@ -73,8 +68,8 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr}) => {
                 // custom 핸들러 설정
                 handlers: {
                     image: imageHandler, // 이미지 tool 사용에 대한 핸들러 설정
-                }
-            },  
+                },
+            },
         }
     ), [])
 
@@ -89,14 +84,28 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr}) => {
     ]
 
     return (
-        <ReactQuill
-            ref={quillRef}
-            theme="snow" 
-            modules={modules} 
-            formats={formats} 
-            value={htmlStr} 
-            placeholder='내용을 입력하세요.'
-            onChange={(content, delta, source, editor) => setHtmlStr(editor.getHTML())} />
+        <>
+            <ReactQuill
+                ref={quillRef}
+                theme="snow" 
+                modules={modules} 
+                formats={formats} 
+                value={htmlStr} 
+                placeholder='내용을 입력하세요.'
+                onChange={(content, delta, source, editor) => setHtmlStr(editor.getHTML())}
+                style={{ height: "600px" }}
+            />
+            <style jsx>
+                {
+                    `
+                        img {
+                            width: 150px;
+                            height: 150px;
+                        }
+                    `
+                }
+            </style>
+        </>
     )
 }
 

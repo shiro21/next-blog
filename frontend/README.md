@@ -41,6 +41,17 @@ npm install @types/react-cookies
 <!-- 에디터 ( SummerNote -> react-quill을 많이 사용한다고 하여 체택 ) -->
 npm uninstall @types/summernote
 npm install react-quill
+npm install quill-image-resize-module-ts
+npm install -D @types/react-draft-wysiwyg @types/draft-js @types/draftjs-to-html @types/
+html-to-draftjs
+npm install react-draft-wysiwyg draft-js draftjs-to-html html-to-draftjs
+<!-- toast UI 업데이트 없음.. -->
+
+<!-- styled 사용하기 -->
+npm install styled-components
+npm install -D babel-plugin-styled-components
+npm install -D @types/styled-components
+
 
 <!-- NEXT Auth ( https://next-auth.js.org/ ) -->
 npm install next-auth

@@ -24,12 +24,6 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     console.log(req.cookies);
 });
 
-// import * as functions from 'firebase-functions';
-
-// export const helloWorld = functions.https.onRequest((req, resp) => {
-//  resp.send("Hello from Firebase!");
-// });
-
 // MongoDB Conn
 import mongoose from "mongoose";
 import { database } from "./config/conn";
