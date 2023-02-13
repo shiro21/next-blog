@@ -42,6 +42,10 @@ npm install @types/react-cookies
 npm uninstall @types/summernote
 npm install react-quill
 npm install quill-image-resize-module-ts
+npm install @looop/quill-image-resize-module-react
+npm install quill-image-resize-module
+npm install quill-image-resize
+
 npm install -D @types/react-draft-wysiwyg @types/draft-js @types/draftjs-to-html @types/
 html-to-draftjs
 npm install react-draft-wysiwyg draft-js draftjs-to-html html-to-draftjs

@@ -17,6 +17,7 @@ const categorySchema = new mongoose.Schema({
     priority:   Number,
     entries:    Number,
     depth:      Number,
+    parent:     mongoose.Schema.Types.ObjectId,
     categoryInfo: {
         image: String,
         description: String
@@ -24,7 +25,9 @@ const categorySchema = new mongoose.Schema({
     opened:     Boolean,
     updateData: Boolean,
     leaf:       Boolean,
-    children:   Array
+    children:   [
+        { type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" }
+    ]
 });
 
 export default mongoose.model("Category", categorySchema);

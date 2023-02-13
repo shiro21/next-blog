@@ -1,21 +1,19 @@
 
-import { Inter } from '@next/font/google'
+// import { Inter } from '@next/font/google'
 import styles from '@/styles/main.module.scss'
 import Seo from './components/Seo'
 
 // Component
 import Side from './components/main/side'
 import MainContents from './components/main/contents'
-import { api, nextBaseUrl } from './services/api'
-import cookies from 'next-cookies'
+import { api } from './services/api'
 import { GetServerSideProps } from 'next'
-import axios from 'axios'
+import { setTokenCookie } from './api/refreshToken'
 
-const inter = Inter({ subsets: ['latin'] })
+// const inter = Inter({ subsets: ['latin'] })
 
 function Main() {
 
-  // const data = axios.get('/api/refreshToken');
   return (
     <>
       <Seo title="메인페이지" />
@@ -40,7 +38,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
       await api.post("/user/decode", { token: isToken })
       .then(res => {
-        if (res.data.code === "y") profile = { success: true, user: res.data.data.user };
+        if (res.data.code === "y") {
+          setTokenCookie(isToken);
+          profile = { success: true, user: res.data.data.user };
+        }
       })
       .catch(err => console.log("Token Decode Err", err));
     

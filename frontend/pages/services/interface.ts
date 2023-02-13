@@ -36,7 +36,45 @@ export interface LoginProps {
 
 // Category
 export interface CategoryProps {
-    
+    _id:        string,
+    createdAt:  Date,
+    updatedAt:  Date,
+    isDeleted:  boolean,
+
+    name:       string,
+    label:      string,
+    priority:   number,
+    entries:    number,
+    depth:      number,
+    parent:     string,
+    categoryInfo: {
+        image: "",
+        description: ""
+    },
+    opened:     boolean,
+    updateData: boolean,
+    leaf:       boolean,
+    children:   []
+}
+export interface SubCategoryProps {
+    _id:        string,
+    createdAt:  Date,
+    updatedAt:  Date,
+    isDeleted:  boolean,
+
+    name:       string,
+    label:      string,
+    priority:   number,
+    entries:    number,
+    depth:      number,
+    parent:     string,
+    categoryInfo: {
+        image: "",
+        description: ""
+    },
+    opened:     boolean,
+    updateData: boolean,
+    leaf:       boolean
 }
 
 // Post

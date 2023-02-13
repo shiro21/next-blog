@@ -298,6 +298,15 @@
                     padding-left: 2rem;
                 }
             }
+            .create_button {
+                > button {
+                    padding: .24rem;
+                    border: 1px solid #DDD;
+                    margin-right: .5rem;
+                    cursor: pointer;
+                    &:last-child { margin-right: 0; }
+                }
+            }
         }
     }
 }

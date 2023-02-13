@@ -24,8 +24,7 @@ const subCategorySchema = new mongoose.Schema({
     },
     opened:     Boolean,
     updateData: Boolean,
-    leaf:       Boolean,
-    children:   Array
+    leaf:       Boolean
 });
 
 export default mongoose.model("SubCategory", subCategorySchema);

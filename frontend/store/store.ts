@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
 import postReducer from "@/features/postSlice";
+import categoryReducer from "@/features/categorySlice";
 
 // Slice
 
 export const store = configureStore({
     reducer: {
-        post: postReducer
+        post: postReducer,
+        category: categoryReducer
     }
 })
 

@@ -2,14 +2,34 @@ import styles from '@/styles/main.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
-import { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { api } from '@/pages/services/api';
+import { CategoryProps, SubCategoryProps } from '@/pages/services/interface';
+
+import { useAppDispatch } from '@/store/store';
+import { categoriesList } from '@/features/categorySlice';
 
 const Side = () => {
+
+    const dispatch = useAppDispatch();
     
     const [sideNav, setSideNav] = useState<boolean>(false);
+    const [categoryWrap, setCategoryWrap] = useState([]);
 
     const mobileSideOpen = () => setSideNav(prev => !prev);
     
+    const category = useMemo(() => {
+        api.post("/edit/categoryFind")
+        .then(res => {
+            if (res.data.code === "y") {
+                setCategoryWrap(res.data.data);
+                dispatch(categoriesList(res.data.data));
+            }
+        })
+        .catch(err => console.log("Edit Find Err", err));
+    }, [])
+
+    console.log(categoryWrap);
 
     return (
         <>
@@ -17,20 +37,29 @@ const Side = () => {
                 <h2><Link href={"/"}>블로그 제목</Link></h2>
 
                 {/* 카테고리 */}
-                <ul className={styles.nav_category_list}>
-                    <li><Link href="/">HTML | CSS(10)</Link></li>
-                    <li>
-                        <Link href="/">Javascript</Link>
-                        <ul>
-                            <li><Link href="/category/1">Javascript 자식</Link></li>
-                            <li><Link href="/category/2">Javascript 자식</Link></li>
-                            <li><Link href="/category/3">Javascript 자식</Link></li>
+                {
+                    categoryWrap.length > 0 && categoryWrap.map((item: CategoryProps, index) => (
+                        <ul className={styles.nav_category_list} key={index}>
+                            <li>
+                                <Link href={`/category/${item.name}`}>
+                                    {item.name} <span>({item.entries})</span>
+                                </Link>
+                            </li>
+                            {/* Sub */}
+                            <ul>
+                                {
+                                    item.children.length > 0 && item.children.map((sub: SubCategoryProps, subIndex) => (
+                                        <li key={subIndex}>
+                                            <Link href={`/category/${item.name}/${sub.name}`}>
+                                                {sub.name}
+                                            </Link>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
                         </ul>
-                    </li>
-                    <li><Link href="/">React</Link></li>
-                    <li><Link href="/">Angular</Link></li>
-                    <li><Link href="/">Vue</Link></li>
-                </ul>
+                    ))
+                }
 
                 {/* 홈 목록 */}
                 <ul className={styles.nav_home_list}>

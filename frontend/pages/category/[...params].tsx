@@ -13,11 +13,12 @@ const MainParams = () => {
     const router = useRouter();
     const [title, setTitle] = useState("");
     useEffect(() => {
+        console.log(router.query.params)
         if (router.query.params === undefined) return;
-        setTitle(router.query.params[0]);
+
+        setTitle(router.query.params[router.query.params.length - 1]);
     }, [router]);
 
-    console.log(router.query)
 
     return (
         <>

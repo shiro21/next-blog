@@ -13,6 +13,7 @@ import { api } from '../services/api';
 import { GetServerSideProps } from 'next';
 import { useEffect } from 'react';
 import { UserProps } from '../services/interface';
+import { setTokenCookie } from '../api/refreshToken';
 
 const Manage = ({ userData }: { userData: UserProps}) => {
 
@@ -74,6 +75,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         try {
           await api.post("/user/decode", { token: isToken })
           .then(res => {
+            setTokenCookie(isToken);
             if (res.data.code === "y") userData = { success: true, user: res.data.data.user };
           })
           .catch(err => console.log("Token Decode Err", err));
