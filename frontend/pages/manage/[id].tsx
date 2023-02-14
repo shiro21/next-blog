@@ -12,10 +12,10 @@ import WriteManage from '../components/manage/write';
 import { api } from '../services/api';
 import { GetServerSideProps } from 'next';
 import { useEffect } from 'react';
-import { UserProps } from '../services/interface';
+import { ApiUserProps } from '../services/apiInterface';
 import { setTokenCookie } from '../api/refreshToken';
 
-const Manage = ({ userData }: { userData: UserProps}) => {
+const Manage = ({ userData }: { userData: ApiUserProps}) => {
 
     const router = useRouter();
 

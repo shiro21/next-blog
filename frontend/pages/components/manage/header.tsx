@@ -6,11 +6,11 @@ import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
-import { UserProps } from '@/pages/services/interface';
+import { ApiUserProps } from '@/pages/services/apiInterface';
 import { removeTokenCookie } from '../login/tokenCookies';
 import { useState } from 'react';
 
-const ManageHeader = ({ userData }: { userData: UserProps }) => {
+const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
     
     const { id, email, name, profile } = userData.user;
     const [profileInfo, setProfileInfo] = useState<boolean>(false);

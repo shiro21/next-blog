@@ -3,7 +3,7 @@ import "dotenv/config";
 const FirebaseStorage = require('multer-firebase-storage');
 import multer from "multer";
 
-export const editMulter = multer({
+export const coverMulter = multer({
     storage: FirebaseStorage({
         bucketName: process.env.FIREBASE_BUCKET,
         credentials: {

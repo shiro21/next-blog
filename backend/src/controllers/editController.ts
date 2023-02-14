@@ -7,6 +7,7 @@ import { fireStorage } from "../config/firebase";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { mongoose } from "../config/plugins";
 import models from "../config/models";
+import { coverMulter } from "../service/uploadService";
 
 const router = express.Router();
 
@@ -158,7 +159,22 @@ router.post("/categoryFind", async (req: Request, res: Response) => {
     .catch(err => console.log("Category Find Err", err));
 
 
-})
+});
+
+// 글 생성
+router.post("/create", coverMulter.single("coverImage"), async (req: Request, res: Response) => {
+    const item = req.body;
+    const file: any | Express.Multer.File = req.file;
+
+    // new Promise(function(resolve, reject) {
+    //     if (files) {
+    //         console.log(files);
+    //     }
+    // })
+
+    console.log(file);
+    console.log(item);
+});
 
 router.post("/test", async (req: Request, res: Response) => {
 

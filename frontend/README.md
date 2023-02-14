@@ -1,7 +1,7 @@
 ## Project Name
 NextJS 블로그 | 기간: 2023.02.02 ~
 * 날짜 ( 프로젝트 진행한 날짜 )
-02.02, 02.06, 02.07, 02.08
+02.02, 02.06, 02.07, 02.08, 02.09, 02.10, 02.13, 02.14
 
 - 참고: 티스토리
 
@@ -42,7 +42,7 @@ npm install @types/react-cookies
 npm uninstall @types/summernote
 npm install react-quill
 npm install quill-image-resize-module-ts
-npm install @looop/quill-image-resize-module-react
+npm uninstall @looop/quill-image-resize-module-react
 npm install quill-image-resize-module
 npm install quill-image-resize
 

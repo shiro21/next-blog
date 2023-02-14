@@ -19,6 +19,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.post('/*', (req, res, next) => {
+    if (req.body) req.body.isDeleted = { $ne: true };
+
+    next();
+});
+
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("양호");
     console.log(req.cookies);

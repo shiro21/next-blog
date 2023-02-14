@@ -13,7 +13,8 @@ export const categorySlice = createSlice({
     initialState,
     reducers: {
         categoriesList: (state, action: PayloadAction<CategoryProps[]>) => {
-            state.category = action.payload
+            state.status = "success";
+            state.category = action.payload;
         }
     },
     extraReducers: (builder) => {

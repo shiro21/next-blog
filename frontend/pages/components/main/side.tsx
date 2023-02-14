@@ -3,33 +3,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import React, { useMemo, useState } from 'react';
-import { api } from '@/pages/services/api';
 import { CategoryProps, SubCategoryProps } from '@/pages/services/interface';
 
-import { useAppDispatch } from '@/store/store';
-import { categoriesList } from '@/features/categorySlice';
+import { useAppSelector } from '@/store/store';
 
 const Side = () => {
 
-    const dispatch = useAppDispatch();
+    const selector = useAppSelector((state) => (state.category));
+
     
     const [sideNav, setSideNav] = useState<boolean>(false);
-    const [categoryWrap, setCategoryWrap] = useState([]);
+    const [categoryWrap, setCategoryWrap] = useState<CategoryProps[]>([]);
 
     const mobileSideOpen = () => setSideNav(prev => !prev);
     
-    const category = useMemo(() => {
-        api.post("/edit/categoryFind")
-        .then(res => {
-            if (res.data.code === "y") {
-                setCategoryWrap(res.data.data);
-                dispatch(categoriesList(res.data.data));
-            }
-        })
-        .catch(err => console.log("Edit Find Err", err));
-    }, [])
-
-    console.log(categoryWrap);
+    const category = useMemo(() => setCategoryWrap(selector.category), [])
 
     return (
         <>

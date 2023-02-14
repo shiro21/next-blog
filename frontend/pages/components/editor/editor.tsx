@@ -10,7 +10,6 @@ import ReactQuill, { Quill } from 'react-quill';
 
 import ImageResize from 'quill-image-resize';
 // import ImageResize from 'quill-image-resize-module';
-// import ImageResize from '@looop/quill-image-resize-module-react';
 Quill.register('modules/ImageResize', ImageResize);
 
 interface IEditor {
@@ -18,7 +17,7 @@ interface IEditor {
     setHtmlStr: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr}) => {
+const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
 
     const quillRef = React.useRef<ReactQuill>(null);
 

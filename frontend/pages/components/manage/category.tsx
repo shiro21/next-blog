@@ -65,7 +65,7 @@ const CategoryManage = () => {
             updatedAth: "",
             isDeleted: false,
             name: subCategory,
-            label: categoryName,
+            label: `${categoryName}/${subCategory}`,
             priority: len,
             entries: 0,
             depth: 2,
