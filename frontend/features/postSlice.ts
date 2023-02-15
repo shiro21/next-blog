@@ -13,7 +13,8 @@ export const postSlice = createSlice({
     initialState,
     reducers: {
         postsList: (state, action: PayloadAction<PostProps[]>) => {
-            state.post = action.payload
+            state.status = "success";
+            state.post = action.payload;
             // console.log(state.post)
             // console.log(action.payload)
         }

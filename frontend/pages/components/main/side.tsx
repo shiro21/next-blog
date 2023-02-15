@@ -2,14 +2,13 @@ import styles from '@/styles/main.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CategoryProps, SubCategoryProps } from '@/pages/services/interface';
 
 import { useAppSelector } from '@/store/store';
 
 const Side = () => {
 
-    const selector = useAppSelector((state) => (state.category));
 
     
     const [sideNav, setSideNav] = useState<boolean>(false);
@@ -17,7 +16,9 @@ const Side = () => {
 
     const mobileSideOpen = () => setSideNav(prev => !prev);
     
-    const category = useMemo(() => setCategoryWrap(selector.category), [])
+    const selector = useAppSelector((state) => (state.category));
+    // const onSelector = useMemo(() => setCategoryWrap(selector.category), [selector]);
+    useEffect(() => setCategoryWrap(selector.category), [selector])
 
     return (
         <>

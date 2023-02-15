@@ -14,13 +14,18 @@ import { GetServerSideProps } from 'next';
 import { useEffect } from 'react';
 import { ApiUserProps } from '../services/apiInterface';
 import { setTokenCookie } from '../api/refreshToken';
+import { useAppDispatch } from '@/store/store';
+import { userList } from '@/features/userSlice';
 
 const Manage = ({ userData }: { userData: ApiUserProps}) => {
 
     const router = useRouter();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (!userData.success) router.push("/login");
+
+        dispatch(userList(userData.user));
     }, [router])
 
     return (

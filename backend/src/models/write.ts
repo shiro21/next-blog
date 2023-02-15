@@ -9,9 +9,12 @@ const writeSchema = new mongoose.Schema({
     title:      String,
     edit:       String,
     tag:        Array,
-    category:   Array,
+    category:   { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+    subCategory:{ type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" },
     coverImage: String,
-    label:      String
+    label:      String,
+    subLabel:   String,
+    owner:      { type: mongoose.Schema.Types.ObjectId, ref: "User" }
 });
 
 export default mongoose.model("Write", writeSchema);

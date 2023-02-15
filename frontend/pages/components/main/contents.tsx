@@ -1,21 +1,20 @@
 import styles from '@/styles/main.module.scss'
-import { fakedata } from '@/pages/api/fakeData';
 import { PostProps } from '@/pages/services/interface';
-import { useEffect } from 'react';
-import { postsList } from '@/features/postSlice';
+import { useEffect, useState } from 'react';
 
 // Components
 import Post from '../post/post';
 import PostLists from '../post/postList';
-import { useAppDispatch } from '@/store/store';
+import { useAppSelector } from '@/store/store';
 
 const MainContents = () => {
 
-    const dispatch = useAppDispatch();
+    const selector = useAppSelector((state) => state.post);
 
+    const [posts, setPosts] = useState<PostProps[]>([]);
     useEffect(() => {
-        dispatch(postsList(fakedata));
-    }, [])
+        setPosts(selector.post);
+    }, [selector])
 
     return (
         <article className={styles.contents_wrap}>
@@ -25,7 +24,7 @@ const MainContents = () => {
             <div className={styles.category_contents}>
                 <ul>
                     {
-                        fakedata.length > 0 && fakedata.map((item: PostProps) => (
+                        posts.length > 0 && posts.map((item: PostProps) => (
                             <PostLists key={item.id} item={item} />
                         ))
                     }
@@ -35,7 +34,7 @@ const MainContents = () => {
             {/* 카테고리 글 */}
             <div className={styles.contents}>
                 {
-                    fakedata.length > 0 && fakedata.map((item: PostProps) => (
+                    posts.length > 0 && posts.map((item: PostProps) => (
                         <Post key={item.id} item={item} />
                     ))
                 }

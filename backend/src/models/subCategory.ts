@@ -15,7 +15,7 @@ const subCategorySchema = new mongoose.Schema({
     name:       String,
     label:      String,
     priority:   Number,
-    entries:    Number,
+    entries:    { type: Number, default: 0 },
     depth:      Number,
     parent:     { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     categoryInfo: {

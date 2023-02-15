@@ -6,18 +6,22 @@ import Seo from '../components/Seo'
 import Side from '../components/main/side'
 import MainContents from '../components/main/contents'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { setTokenCookie } from '../api/refreshToken'
 import { api } from '../services/api'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { useAppDispatch } from '@/store/store'
 import { categoriesList } from '@/features/categorySlice'
+import { postsList } from '@/features/postSlice'
 
-const MainParams = ({ categoriesData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const MainParams = ({ categoriesData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const dispatch = useAppDispatch();
 
-    const categoryAdd = useMemo(() => dispatch(categoriesList(categoriesData.category)), [])
+    useEffect(() => {
+      dispatch(categoriesList(categoriesData.category));
+      dispatch(postsList(postsData.post));
+    }, [categoriesData.category])
 
     const router = useRouter();
     const [title, setTitle] = useState("");
@@ -46,16 +50,22 @@ export default MainParams;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   
     const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
-  
+    
     let userData = { success: false, user: null };
-    let categoriesData = { success: false, category: [] }
-  
-    await api.post("/edit/categoryFind")
-    .then(res => {
-      if (res.data.code === "y") categoriesData = { success: true, category: res.data.data }
-    })
-    .catch(err => console.log("Category Load Err", err));
-  
+    let categoriesData = { success: false, category: [] };
+    let postsData = { success: false, post: [] };
+
+    if (context.params) {
+      await api.post("/total/params", { type: context.params })
+      .then(res => {
+        if (res.data.code === "y") {
+          categoriesData = { success: true, category: res.data.categories }
+          postsData = { success: true, post: res.data.posts }
+        }
+      })
+      .catch(err => console.log("Load Err", err));
+    }
+
     if (isToken === "") userData = { success: false, user: null };
     else {
       try {
@@ -73,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     
     return {
-      props: { userData, categoriesData }
+      props: { userData, categoriesData, postsData }
     }
   }
   

@@ -7,23 +7,11 @@ import { fireStorage } from "../config/firebase";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { mongoose } from "../config/plugins";
 import models from "../config/models";
-import { coverMulter } from "../service/uploadService";
+import { coverMulter, editMulter } from "../service/uploadService";
 
 const router = express.Router();
 
-const editMulter = multer({
-    storage: FirebaseStorage({
-        bucketName: process.env.FIREBASE_BUCKET,
-        credentials: {
-            clientEmail: process.env.FIREBASE_CEMAIL,
-            privateKey: (process.env.FIREBASE_PRIVATE_KEY !== undefined ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : ""),
-            // privateKey: process.env.FIREBASE_PRIVATE_KEY,
-            projectId: process.env.FIREBASE_PROJECT_ID
-        },
-        directoryPath:`edit`,
-        unique: true
-    }),
-})
+
 
 router.post("/fileAdd", editMulter.array("multipartFiles"), async (req: Request, res: Response) => {
     
@@ -157,23 +145,92 @@ router.post("/categoryFind", async (req: Request, res: Response) => {
         })
     })
     .catch(err => console.log("Category Find Err", err));
-
-
 });
 
 // 글 생성
 router.post("/create", coverMulter.single("coverImage"), async (req: Request, res: Response) => {
     const item = req.body;
     const file: any | Express.Multer.File = req.file;
+    let mainCategory: mongoose.Types.ObjectId | undefined = undefined;
+    let subCategory: mongoose.Types.ObjectId | undefined = undefined;
 
-    // new Promise(function(resolve, reject) {
-    //     if (files) {
-    //         console.log(files);
-    //     }
-    // })
+    let mainLabel = item.select;
+    let subLabel = item.select;
 
-    console.log(file);
-    console.log(item);
+    if (item.select.indexOf("/") > -1) {
+        mainLabel = item.select.split("/")[0];
+        subLabel = item.select.split("/").at(-1);
+        console.log(mainLabel);
+        console.log(subLabel);
+
+        await models.SubCategory.findOne({ label: item.select })
+        .then(_sub => {
+            if (!_sub) return;
+
+            mainCategory = _sub._id
+
+            /* Save 내용 */
+            _sub.entries = _sub.entries + 1
+            
+            _sub.save();
+
+            models.Category.findOne({ _id: _sub.parent })
+            .then(_main => {
+                if (!_main) return;
+                _main.entries = _main.entries + 1
+                _main.save();
+            })
+            .catch(err => console.log("Main Category Entries err", err));
+        })
+        .catch(err => console.log("SubCategory Err", err));
+    } else {
+        await models.Category.findOne({ label: item.select })
+        .then(_main => {
+            if (!_main) return;
+
+            subCategory = _main._id;
+
+            /* Save 내용 */
+
+            _main.entries = _main.entries + 1;
+
+            _main.save();
+        })
+        .catch(err => console.log("SubCategory Err", err));
+    }
+
+    try {
+        const storage = getStorage();
+        await getDownloadURL(ref(storage, file.path))
+        .then((url: string) => {
+            
+            const edit = new models.Write({
+                _id:        new mongoose.Types.ObjectId(),
+                createdAt:  new Date(),
+                updatedAt:  new Date(),
+                
+                title:      item.title,
+                edit:       item.edit,
+                tag:        item.tagData,
+                category:   mainCategory,
+                subCategory:subCategory,
+                coverImage: url,
+                label:      mainLabel,
+                subLabel:   subLabel
+            });
+
+            edit.save()
+            .then(result => {
+                res.status(200).json({
+                    code: "y"
+                })
+            })
+            .catch(err => console.log("Edit Create Err", err));
+        })
+    } catch (err) {
+        console.log(err);
+    }
+    
 });
 
 router.post("/test", async (req: Request, res: Response) => {

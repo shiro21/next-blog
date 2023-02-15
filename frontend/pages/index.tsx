@@ -9,17 +9,22 @@ import MainContents from './components/main/contents'
 import { api } from './services/api'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { setTokenCookie } from './api/refreshToken'
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { categoriesList } from '@/features/categorySlice'
 import { useAppDispatch } from '@/store/store'
+import { postsList } from '@/features/postSlice'
 
 // const inter = Inter({ subsets: ['latin'] })
 
-function Main({ categoriesData }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Main({ categoriesData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
   const dispatch = useAppDispatch();
 
-  const categoryAdd = useMemo(() => dispatch(categoriesList(categoriesData.category)), [])
+  useEffect(() => {
+    dispatch(categoriesList(categoriesData.category));
+    dispatch(postsList(postsData.post));
+  }, []);
+
 
   return (
     <>
@@ -39,13 +44,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
 
   let userData = { success: false, user: null };
-  let categoriesData = { success: false, category: [] }
+  let categoriesData = { success: false, category: [] };
+  let postsData = { success: false, post: [] };
 
-  await api.post("/edit/categoryFind")
-  .then(res => {
-    if (res.data.code === "y") categoriesData = { success: true, category: res.data.data }
-  })
-  .catch(err => console.log("Category Load Err", err));
+  try {
+    await api.post("/total/categoryAndPosts")
+    .then(res => {
+      if (res.data.code === "y") {
+        categoriesData = { success: true, category: res.data.categories }
+        postsData = { success: true, post: res.data.posts }
+      }
+    })
+    .catch(err => console.log("Category Load Err", err));
+  } catch (err) {
+    console.log(err);
+  }
 
   if (isToken === "") userData = { success: false, user: null };
   else {
@@ -64,6 +77,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   
   return {
-    props: { userData, categoriesData }
+    props: { userData, categoriesData, postsData }
   }
 }

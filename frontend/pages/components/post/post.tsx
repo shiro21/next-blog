@@ -2,6 +2,7 @@ import { PostProps } from '@/pages/services/interface';
 import styles from '@/styles/_post.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons';
+import moment from 'moment';
 
 // Components
 import PostLists from './postList';
@@ -12,7 +13,7 @@ const Post = ({item}: { item: PostProps}) => {
             {/* 제목 */}
             <h2>{item.title}</h2>
             {/* 날짜 */}
-            <span className={styles.item_create}>{item.createdAt}</span>
+            <span className={styles.item_create}>{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
             {/* 태그 */}
             <div className={styles.item_tag}>
                 {
@@ -22,8 +23,8 @@ const Post = ({item}: { item: PostProps}) => {
                 }
             </div>
             {/* 내용 */}
-            <div className={styles.item_content}>
-                {item.content}
+            <div className={styles.item_content} dangerouslySetInnerHTML={{__html: item.edit}}>
+                {/* {item.edit} */}
             </div>
 
             {/* 좋아요 */}

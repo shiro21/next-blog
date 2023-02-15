@@ -1,32 +1,22 @@
 import * as React from 'react';
 import dynamic from 'next/dynamic';
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
-import { api, appApi, formApi } from './services/api';
+import { api } from './services/api';
 import { setTokenCookie } from './api/refreshToken';
 import { categoriesList } from '@/features/categorySlice';
-import { useAppDispatch, useAppSelector } from '@/store/store';
-import { CategoryProps, SubCategoryProps } from './services/interface';
+import { useAppDispatch } from '@/store/store';
+import { SubCategoryProps } from './services/interface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 const Editor = dynamic(() => import("@/pages/components/editor/editor"), { ssr: false }); // client 사이드에서만 동작되기 때문에 ssr false로 설정
 
-const Write: NextPage = ({ categoriesData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // state
     const [htmlStr, setHtmlStr] = React.useState<string>('');
 
-    // ref
-    // const viewContainerRef = React.useRef<HTMLDivElement>(null);
-
-    // // useEffect
-    // React.useEffect(() => {
-    //     if(viewContainerRef.current) {
-    //         viewContainerRef.current.innerHTML = '<h2>html 코드를 이용하여 만들어지는 View입니다.</h2>'
-    //         viewContainerRef.current.innerHTML += htmlStr;
-    //     }
-    // }, [htmlStr])
-
+    const router = useRouter();
     const dispatch = useAppDispatch();
 
     const categoryAdd = React.useMemo(() => dispatch(categoriesList(categoriesData.category)), [])
@@ -40,6 +30,7 @@ const Write: NextPage = ({ categoriesData }: InferGetServerSidePropsType<typeof 
         let key = e.code;
         if (key === "Enter") {
             if (tagData.length > 4) return alert("최대 5개까지 가능합니다.");
+            else if (tagData.indexOf(tag) > -1) return alert("이미 있는 태그입니다.");
             setTagData([...tagData, tag])
             setTag("");
         }
@@ -87,13 +78,16 @@ const Write: NextPage = ({ categoriesData }: InferGetServerSidePropsType<typeof 
 
         formData.append("select", select);
         formData.append("title", title);
-        formData.append("tagData", tagData[0]);
+        for (let i = 0; i < tagData.length; i++) formData.append("tagData", tagData[i]);
         formData.append("edit", htmlStr);
         formData.append("coverImage", files);
-
-        console.log(formData);
+        formData.append("owner", userData.user._id);
 
         await api.post("/edit/create", formData)
+        .then(res => {
+            if (res.data.code === "y") router.push("/");
+        })
+        .catch(err => console.log("Write Create Err", err));
     }
 
     return (
@@ -130,7 +124,7 @@ const Write: NextPage = ({ categoriesData }: InferGetServerSidePropsType<typeof 
                             tagData.length > 0 && tagData.map((item, index) => (
                                 <li key={index} style={{position: "relative", padding: ".5rem 2rem .5rem .5rem", border: "1px solid #DDD", borderRadius: "10px", margin: "0 .5rem .5rem 0"}}>
                                     {item}
-                                    <span onClick={() => tagDeleted(item)} style={{position: "absolute", right: ".5rem", cursor: "pointer"}}>
+                                    <span onClick={() => tagDeleted(item)} style={{position: "absolute", right: ".5rem", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", cursor: "pointer"}}>
                                         <FontAwesomeIcon icon={faDeleteLeft} />
                                     </span>
                                 </li>
@@ -148,8 +142,8 @@ const Write: NextPage = ({ categoriesData }: InferGetServerSidePropsType<typeof 
                     </div>
                     <div>
                         {
-                            preview.length > 0 && <div>
-                                <span onClick={previewDeleted} style={{position: "absolute", right: ".5rem", cursor: "pointer"}}>
+                            preview.length > 0 && <div style={{position: "relative"}}>
+                                <span onClick={previewDeleted} style={{position: "absolute", right: ".5rem", top: ".5rem", cursor: "pointer"}}>
                                     <FontAwesomeIcon icon={faDeleteLeft} />
                                 </span>
                                 {/* <Image unoptimized src={String(preview[0].imagePreviewUrl)} alt="대표 이미지" /> */}

@@ -27,6 +27,10 @@ npm install @types/multer
 <!-- Firebase -->
 npm install multer-firebase-storage
 npm uninstall firebase-functions
+<!-- Moment -->
+npm install moment
+npm install moment-timezone
+
 
 <!-- 아직 미설치 -->
 npm uninstall @firebase/app-types

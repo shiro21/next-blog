@@ -17,6 +17,19 @@ export interface LoginProps {
     id: string,
     password: string
 };
+export interface UserProps {
+    _id:        string,
+    createdAt:  string,
+    updatedAt:  string,
+    isDeleted:  boolean,
+    id:         string,
+    email:      string,
+    type:       string,
+    role:       string,
+    roleLabel:  string,
+    name:       string,
+    profile:    string
+}
 
 // Category
 export interface CategoryProps {
@@ -68,7 +81,7 @@ export interface PostListsProps {
             _id: string
             id: number
             title: string
-            content: string
+            edit: string
             image: string
             tag: string[]
             createdAt: string
@@ -80,7 +93,7 @@ export interface PostProps {
     _id: string
     id: number
     title: string
-    content: string
+    edit: string
     image: string
     tag: string[]
     createdAt: string

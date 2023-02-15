@@ -1,12 +1,13 @@
 import styles from '@/styles/_post.module.scss';
 import { PostProps } from "@/pages/services/interface";
 import Link from 'next/link';
+import moment from 'moment';
 
 const PostLists = ({ item }: { item: PostProps }) => {
     return (
-        <li className={styles.post_lists} key={item.id}>
-            <Link href={`/${item.id}`}>{item.title}</Link>
-            <span>{item.createdAt}</span>
+        <li className={styles.post_lists} key={item._id}>
+            <Link href={`/${item._id}`}>{item.title}</Link>
+            <span>{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
             <div style={{clear: "both"}}></div>
         </li>
     );
