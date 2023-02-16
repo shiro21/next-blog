@@ -3,9 +3,9 @@ import dynamic from 'next/dynamic';
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
 import { api } from './services/api';
 import { setTokenCookie } from './api/refreshToken';
-import { categoriesList } from '@/features/categorySlice';
-import { useAppDispatch } from '@/store/store';
-import { SubCategoryProps } from './services/interface';
+// import { categoriesList } from '@/features/categorySlice';
+// import { useAppDispatch } from '@/store/store';
+import { CategoryProps, PostProps, SubCategoryProps } from './services/interface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
@@ -15,16 +15,39 @@ const Editor = dynamic(() => import("@/pages/components/editor/editor"), { ssr: 
 const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // state
     const [htmlStr, setHtmlStr] = React.useState<string>('');
+    const [updateHtml, setUpdateHtml] = React.useState<string>('');
 
     const router = useRouter();
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
 
-    const categoryAdd = React.useMemo(() => dispatch(categoriesList(categoriesData.category)), [])
+    // const categoryAdd = React.useMemo(() => dispatch(categoriesList(categoriesData.category)), [])
 
     const [select, setSelect] = React.useState("");
     const [title, setTitle] = React.useState("");
     const [tag, setTag] = React.useState("");
     const [tagData, setTagData] = React.useState<string[]>([]);
+    const [postData, setPostData] = React.useState<string | null>(null);
+    // const [prevFile, setPrevFile] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        if (router.query.post !== undefined) {
+            let contents = JSON.parse(router.query.post as string);
+            api.post("/edit/uploadDecoded", { image: contents.coverImage })
+            .then(res => {
+                console.log(res.data.data);
+                setHtmlStr(contents.edit);
+                // setHtmlStr(res.data.edit);
+                setFiles(res.data.data);
+                setPostData(contents._id);
+                setPreview([{ file: contents.image, imagePreviewUrl: contents.coverImage }]);
+                setSelect(contents.subLabel);
+                setTitle(contents.title);
+                setTagData(contents.tag);
+
+            })
+            .catch(err => console.log("Upload Image Err", err));
+        }
+    }, [])
 
     const tagKeyCode = (e: React.KeyboardEvent<HTMLInputElement>) => {
         let key = e.code;
@@ -68,22 +91,30 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
 
     const onClick = async () => {
         const formData = new FormData();
-        console.log(select);
-        console.log(title);
-        console.log(tagData);
-        console.log(htmlStr);
-        console.log(files);
 
-        if (select === "" || title === "" || tagData.length === 0 || htmlStr === "" || files === null) return alert("뭔가 하나 빠졌습니다 !!!");
-
+        if (userData.user === null) {
+            alert("로그인 해주세요.");
+            return router.push("/login");
+        } else if (select === "" || title === "" || tagData.length === 0 || htmlStr === "" || files === null) return alert("뭔가 하나 빠졌습니다 !!!");
         formData.append("select", select);
         formData.append("title", title);
         for (let i = 0; i < tagData.length; i++) formData.append("tagData", tagData[i]);
         formData.append("edit", htmlStr);
-        formData.append("coverImage", files);
         formData.append("owner", userData.user._id);
 
-        await api.post("/edit/create", formData)
+        let route;
+        if (postData) {
+            route = "/edit/update"
+            formData.append("_id", postData);
+            formData.append("coverImage", files);
+            // if (files) formData.append("coverImage", files);
+            // else formData.append("coverImage", files);
+        } else {
+            route = "/edit/create"
+            formData.append("coverImage", files);
+        }
+
+        await api.post(route, formData)
         .then(res => {
             if (res.data.code === "y") router.push("/");
         })
@@ -97,7 +128,7 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
                 <select value={select} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelect(e.target.value)} style={{ marginBottom: "1rem", width: "150px", fontSize: "1rem", fontWeight: "bold", marginTop: "1rem" }}>
                     <option value={""}>선택해주세요.</option>
                     {
-                        categoryAdd.payload.length > 0 && categoryAdd.payload.map((item) => (
+                        categoriesData.category.length > 0 && categoriesData.category.map((item: CategoryProps) => (
                             <React.Fragment key={item.priority}>
                                 <option value={item.label}>{item.name}</option>
                                 {

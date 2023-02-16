@@ -1,5 +1,5 @@
-export const setTokenCookie = (token: string) => {
-    fetch("/api/login", {
+export const setTokenCookie = async (token: string) => {
+    await fetch("/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

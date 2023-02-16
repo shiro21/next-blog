@@ -40,6 +40,7 @@ export interface CategoryProps {
 
     name:       string,
     label:      string,
+    subLabel:   string,
     priority:   number,
     entries:    number,
     depth:      number,
@@ -61,6 +62,7 @@ export interface SubCategoryProps {
 
     name:       string,
     label:      string,
+    subLabel:   string,
     priority:   number,
     entries:    number,
     depth:      number,
@@ -90,12 +92,14 @@ export interface PostListsProps {
     ]
 };
 export interface PostProps {
-    _id: string
-    id: number
-    title: string
-    edit: string
-    image: string
-    tag: string[]
-    createdAt: string
-    updatedAt: string
+    label: string,
+    subLabel: string,
+    _id: string,
+    id: number,
+    title: string,
+    edit: string,
+    image: string,
+    tag: string[],
+    createdAt: string,
+    updatedAt: string,
 };

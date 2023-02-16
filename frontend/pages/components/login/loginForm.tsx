@@ -20,12 +20,12 @@ const LoginForm = () => {
     });
     const [autoSave, setAutoSave] = useState<boolean>(false);
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (formData.id === "" || formData.password === "") return alert("아이디와 비밀번호를 입력해주세요.");
-        api.post("/user/login", formData)
-        .then(res => {
+        await api.post("/user/login", formData)
+        .then(async res => {
             if (res.data.code === "id") {
 
                 setFormData({id: "", password: ""});
@@ -38,21 +38,8 @@ const LoginForm = () => {
 
             } else if (res.data.code === "y") {
 
-                setTokenCookie(res.data.token);
-                
-                if (autoSave) {
-                    // localStorage.setItem("@nextjs-blog-token", res.data.token);
-                    // localStorage.setItem("@nextjs-blog-user", res.data.user);
-
-                    // sessionStorage.removeItem("@nextjs-blog-token");
-                    // sessionStorage.removeItem("@nextjs-blog-user");
-                } else {
-                    // sessionStorage.setItem("@nextjs-blog-token", res.data.token);
-                    // sessionStorage.setItem("@nextjs-blog-user", res.data.user);
-
-                    // localStorage.removeItem("@nextjs-blog-token");
-                    // localStorage.removeItem("@nextjs-blog-user");
-                }
+                // 쿠키에 토큰을 저장하기 전에 시작되는 문제때문에 async await 사용
+                await setTokenCookie(res.data.token);
 
                 router.push("/");
             }

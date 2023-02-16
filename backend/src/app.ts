@@ -7,7 +7,7 @@ import http from "http";
 const server = http.createServer(app);
 
 import cors from "cors";
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: "*", credentials: true }));
 
 import bodyParser from "body-parser";
 app.use(bodyParser.json());

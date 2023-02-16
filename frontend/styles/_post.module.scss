@@ -17,7 +17,7 @@
     margin-bottom: 3rem;
     border: 1px solid #DDD;
     > h2 {
-        font-size: $font_size_300;
+        font-size: $font_size_500;
         font-weight: $font_weight_semibold;
         margin-bottom: 1rem;
     }
@@ -45,7 +45,16 @@
         margin-bottom: 1rem;
     }
     .item_like {
+        // position: relative;
+        display: flex;
+        align-items: center;
+        height: 40px;
         margin-bottom: 2rem;
+        > span {
+            // position: absolute;
+        }
+        > label { font-size: $font_size_300; font-weight: $font_weight_semibold; padding-left: 1rem; }
+        > input { width: 100px; margin-left: 1rem; }
     }
     .category_list_wrap {
         margin-bottom: 1rem;

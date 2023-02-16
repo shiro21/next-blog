@@ -13,16 +13,18 @@ import { useEffect } from 'react'
 import { categoriesList } from '@/features/categorySlice'
 import { useAppDispatch } from '@/store/store'
 import { postsList } from '@/features/postSlice'
+import { userList } from '@/features/userSlice'
 
 // const inter = Inter({ subsets: ['latin'] })
 
-function Main({ categoriesData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Main({ categoriesData, postsData, userData }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(categoriesList(categoriesData.category));
     dispatch(postsList(postsData.post));
+    dispatch(userList(userData.user));
   }, []);
 
 
@@ -40,7 +42,7 @@ function Main({ categoriesData, postsData }: InferGetServerSidePropsType<typeof 
 export default Main;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  
+
   const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
 
   let userData = { success: false, user: null };
@@ -62,11 +64,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (isToken === "") userData = { success: false, user: null };
   else {
+
     try {
+      setTokenCookie(isToken);
+
       await api.post("/user/decode", { token: isToken })
       .then(res => {
         if (res.data.code === "y") {
-          setTokenCookie(isToken);
           userData = { success: true, user: res.data.data.user };
         }
       })

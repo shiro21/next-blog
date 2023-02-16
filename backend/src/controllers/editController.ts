@@ -4,7 +4,7 @@ import { multer } from "../config/plugins";
 const FirebaseStorage = require('multer-firebase-storage');
 // import { FirebaseStorage } from "firebase/storage";
 import { fireStorage } from "../config/firebase";
-import { getDownloadURL, ref, getStorage } from "firebase/storage";
+import { getDownloadURL, ref, getStorage, getMetadata } from "firebase/storage";
 import { mongoose } from "../config/plugins";
 import models from "../config/models";
 import { coverMulter, editMulter } from "../service/uploadService";
@@ -160,14 +160,13 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
     if (item.select.indexOf("/") > -1) {
         mainLabel = item.select.split("/")[0];
         subLabel = item.select.split("/").at(-1);
-        console.log(mainLabel);
-        console.log(subLabel);
 
         await models.SubCategory.findOne({ label: item.select })
         .then(_sub => {
             if (!_sub) return;
 
-            mainCategory = _sub._id
+            mainCategory = _sub.parent;
+            subCategory = _sub._id;
 
             /* Save 내용 */
             _sub.entries = _sub.entries + 1
@@ -188,7 +187,7 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
         .then(_main => {
             if (!_main) return;
 
-            subCategory = _main._id;
+            mainCategory = _main._id
 
             /* Save 내용 */
 
@@ -231,6 +230,33 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
         console.log(err);
     }
     
+});
+
+router.post("/uploadDecoded", async (req: Request, res: Response) => {
+    
+    const { image } = req.body;
+    const storage = getStorage();
+
+    const data = ref(storage, image);
+
+    await getMetadata(data)
+    .then(meta => {
+        res.status(200).json({
+            code: "y",
+            data: meta
+        });
+    })
+    .catch(err => console.log("MetaData Err", err));
+
+});
+
+router.post("/update", coverMulter.single("coverImage"), async (req: Request, res: Response) => {
+
+    const item = req.body;
+    const file: any | Express.Multer.File = req.file;
+
+    console.log(item);
+    console.log(file);
 });
 
 router.post("/test", async (req: Request, res: Response) => {
