@@ -8,17 +8,27 @@ import moment from 'moment';
 import PostLists from './postList';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { api } from '@/pages/services/api';
-import { useAppSelector } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useRouter } from 'next/router';
+import { postsList } from '@/features/postSlice';
+import { categoriesList } from '@/features/categorySlice';
 
 const Post = ({ item }: { item: PostProps }) => {
 
+    const selector = useAppSelector((state) => state.post);
+    const dispatch = useAppDispatch();
     const router = useRouter();
 
     const userData = useAppSelector((state) => state.user.user);
     const [user, setUser] = useState<UserProps | null>(null);
+    const [listData, setListData] = useState<PostProps[] | undefined>([]);
 
-    useEffect(() => setUser(userData), [])
+    useEffect(() => {
+        setUser(userData);
+        console.log(selector.post.filter((post, index) => post.subLabel === item.subLabel));
+        // setListData((prev: any) => [...prev.slice(-4), selector.post.filter((post, index) => post.subLabel === item.subLabel)]);
+        setListData(selector.post.filter((post, index) => post.subLabel === item.subLabel).slice(-5));
+    }, [])
 
     const [likeName, setLikeName] = useState("");
     const [like, setLike] = useState<number | null>(null);
@@ -33,6 +43,17 @@ const Post = ({ item }: { item: PostProps }) => {
         })
         .catch(err => console.log("Like Update Err", err));
     }
+
+    const postDeleted = () => {
+        api.post("/edit/deleted", {_id: item._id})
+        .then(res => {
+            if (res.data.code === "y") {
+                dispatch(postsList(res.data.posts));
+                dispatch(categoriesList(res.data.categories));
+            }
+        })
+        .catch(err => console.log("Deleted Err", err));
+    }
     return (
         <section className={styles.contents_item}>
             {/* 제목 */}
@@ -42,7 +63,7 @@ const Post = ({ item }: { item: PostProps }) => {
             {/* 태그 */}
             <div className={styles.item_tag}>
                 {
-                    item.tag.length > 0 && item.tag.map((tag, index) => (
+                    item && item.tag.map((tag, index) => (
                         <span key={index}>#{tag}</span>
                     ))
                 }
@@ -68,7 +89,13 @@ const Post = ({ item }: { item: PostProps }) => {
             <div className={styles.category_list_wrap}>
                 <ul>
                     <li><span>"{item.subLabel}"</span> 카테고리의 다른 글</li>
-                    <PostLists item={item} />
+
+                    {
+                        listData && listData.map((item, index) => (
+                            <PostLists key={index} item={item} />
+                        ))
+                    }
+                    
                 </ul>
             </div>
 
@@ -77,7 +104,7 @@ const Post = ({ item }: { item: PostProps }) => {
                 user && <div className={styles.write_options}>
                     <ul>
                         <li onClick={() => router.push({ pathname: "/write", query: {post: JSON.stringify(item)}}, "/write")}>수정</li>
-                        <li>삭제</li>
+                        <li onClick={postDeleted}>삭제</li>
                     </ul>
                 </div>
             }

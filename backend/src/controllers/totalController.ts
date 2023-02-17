@@ -23,13 +23,12 @@ router.post("/categoryAndPosts",  async (req: Request, res: Response) => {
     })
     .catch(err => console.log("Category Find Err", err));
 
-    await models.Write.find()
+    await models.Write.find({ isDeleted: false })
     .sort({createdAt: -1})
     .then(arrPost => {
         posts = arrPost
     })
     .catch(err => console.log("Write Find Err", err));
-
 
     res.status(200).json({
         code: "y",
@@ -45,14 +44,14 @@ router.post("/params",  async (req: Request, res: Response) => {
     let posts;
 
     if (item.type.params.length === 1) {
-        await models.Write.find({ label: item.type.params })
+        await models.Write.find({ label: item.type.params, isDeleted: false })
         .sort({createdAt: -1})
         .then(arrPost => {
             posts = arrPost
         })
         .catch(err => console.log("Write Find Err", err));
     } else {
-        await models.Write.find({ subLabel: item.type.params.at(-1) })
+        await models.Write.find({ subLabel: item.type.params.at(-1), isDeleted: false })
         .sort({createdAt: -1})
         .then(arrPost => {
             posts = arrPost

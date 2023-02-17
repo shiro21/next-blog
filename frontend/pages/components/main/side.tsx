@@ -42,7 +42,7 @@ const Side = () => {
                                     item.children.length > 0 && item.children.map((sub: SubCategoryProps, subIndex) => (
                                         <li key={subIndex}>
                                             <Link href={`/category/${item.name}/${sub.name}`}>
-                                                {sub.name}
+                                                {sub.name} <span>({sub.entries})</span>
                                             </Link>
                                         </li>
                                     ))

@@ -15,37 +15,39 @@ const Editor = dynamic(() => import("@/pages/components/editor/editor"), { ssr: 
 const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // state
     const [htmlStr, setHtmlStr] = React.useState<string>('');
-    const [updateHtml, setUpdateHtml] = React.useState<string>('');
 
     const router = useRouter();
     // const dispatch = useAppDispatch();
 
     // const categoryAdd = React.useMemo(() => dispatch(categoriesList(categoriesData.category)), [])
 
-    const [select, setSelect] = React.useState("");
+    const [select, setSelect] = React.useState("선택해주세요.");
     const [title, setTitle] = React.useState("");
     const [tag, setTag] = React.useState("");
     const [tagData, setTagData] = React.useState<string[]>([]);
     const [postData, setPostData] = React.useState<string | null>(null);
     // const [prevFile, setPrevFile] = React.useState<string | null>(null);
 
+    const [submit, setSubmit] = React.useState("등록하기");
+    const [oldFile, setOldFile] = React.useState<string | null>(null);
     React.useEffect(() => {
         if (router.query.post !== undefined) {
             let contents = JSON.parse(router.query.post as string);
-            api.post("/edit/uploadDecoded", { image: contents.coverImage })
-            .then(res => {
-                console.log(res.data.data);
-                setHtmlStr(contents.edit);
-                // setHtmlStr(res.data.edit);
-                setFiles(res.data.data);
-                setPostData(contents._id);
-                setPreview([{ file: contents.image, imagePreviewUrl: contents.coverImage }]);
-                setSelect(contents.subLabel);
-                setTitle(contents.title);
-                setTagData(contents.tag);
 
-            })
-            .catch(err => console.log("Upload Image Err", err));
+            setSubmit("업데이트");
+            setHtmlStr(contents.edit);
+            // setHtmlStr(res.data.edit);
+            setOldFile(contents.coverImage);
+            setPostData(contents._id);
+            setPreview([{ file: contents.image, imagePreviewUrl: contents.coverImage }]);
+            setSelect(`${contents.label}/${contents.subLabel}`);
+            setTitle(contents.title);
+            setTagData(contents.tag);
+            // api.post("/edit/uploadDecoded", { image: contents.coverImage })
+            // .then(res => {
+
+            // })
+            // .catch(err => console.log("Upload Image Err", err));
         }
     }, [])
 
@@ -95,23 +97,21 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
         if (userData.user === null) {
             alert("로그인 해주세요.");
             return router.push("/login");
-        } else if (select === "" || title === "" || tagData.length === 0 || htmlStr === "" || files === null) return alert("뭔가 하나 빠졌습니다 !!!");
+        } else if (select === "" || title === "" || tagData.length === 0 || htmlStr === "" || (files === null && oldFile === null)) return alert("뭔가 하나 빠졌습니다 !!!");
         formData.append("select", select);
         formData.append("title", title);
         for (let i = 0; i < tagData.length; i++) formData.append("tagData", tagData[i]);
         formData.append("edit", htmlStr);
         formData.append("owner", userData.user._id);
+        if (files) formData.append("coverImage", files);
 
         let route;
         if (postData) {
             route = "/edit/update"
             formData.append("_id", postData);
-            formData.append("coverImage", files);
-            // if (files) formData.append("coverImage", files);
-            // else formData.append("coverImage", files);
+            if (oldFile) formData.append("oldImage", oldFile);
         } else {
             route = "/edit/create"
-            formData.append("coverImage", files);
         }
 
         await api.post(route, formData)
@@ -126,7 +126,7 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
             <div style={{ width: "800px", margin: "0 auto", marginTop: "2rem" }}>
                 {/* 카테고리 */}
                 <select value={select} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelect(e.target.value)} style={{ marginBottom: "1rem", width: "150px", fontSize: "1rem", fontWeight: "bold", marginTop: "1rem" }}>
-                    <option value={""}>선택해주세요.</option>
+                    <option value={select}>{select}</option>
                     {
                         categoriesData.category.length > 0 && categoriesData.category.map((item: CategoryProps) => (
                             <React.Fragment key={item.priority}>
@@ -184,7 +184,9 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
                     </div>
                 </div>
                 {/* 제출하기 */}
-                <button style={{ float: "right", fontSize: "1rem", fontWeight: "bold", marginTop: "1rem" }} onClick={onClick}>등록하기</button>
+                <button style={{ float: "right", fontSize: "1rem", fontWeight: "bold", marginTop: "1rem" }} onClick={onClick}>
+                    등록하기
+                </button>
             </div>
 
             {/* <div>

@@ -27,7 +27,6 @@ app.post('/*', (req, res, next) => {
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("양호");
-    console.log(req.cookies);
 });
 
 // MongoDB Conn
