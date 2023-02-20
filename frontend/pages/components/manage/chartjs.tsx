@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { faker } from '@faker-js/faker';
+import { UserAgentProps } from '@/pages/services/interface';
 
 ChartJS.register(
     CategoryScale,
@@ -42,6 +43,7 @@ export const data = {
     datasets: [
       {
         label: 'Dataset 1',
+        // data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
         data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -55,7 +57,9 @@ export const data = {
     ],
 };
 
-const Chart = () => {
+const Chart = ({ agent }: { agent: UserAgentProps[] }) => {
+  console.log(faker.datatype.number({ min: 0, max: 1000 }));
+  console.log(agent.length);
     return <Line options={options} data={data} />;
 }
 

@@ -95,11 +95,43 @@ export interface PostProps {
     label: string,
     subLabel: string,
     _id: string,
-    id: number,
     title: string,
     edit: string,
     image: string,
     tag: string[],
     createdAt: string,
     updatedAt: string,
+    owner: {
+        id:         string,
+        email:      string,
+        type:       string,
+        role:       string,
+        roleLabel:  string,
+        name:       string,
+        profile:    string
+    }
 };
+
+// Comment
+export interface CommentProps {
+    _id:        string,
+    createdAt:  Date,
+    updatedAt:  Date,
+    isDeleted:  boolean,
+
+    nick:       string,
+    password:   string,
+    comment:    string,
+    secret:     boolean,
+    owner:      string
+}
+
+// UserAgent
+export interface UserAgentProps {
+    _id:            string,
+    updatedAt:      Date,
+    createdAt:      Date,
+
+    write:          string,
+    userAgent:      string,
+}

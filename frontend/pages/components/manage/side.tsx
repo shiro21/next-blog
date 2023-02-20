@@ -3,15 +3,16 @@ import Image from 'next/image';
 
 import favi from '@/public/favi.ico'
 import Link from 'next/link';
+import { ApiUserProps } from '@/pages/services/apiInterface';
 
-const ManageSide = () => {
+const ManageSide = ({ userData }: { userData: ApiUserProps }) => {
     return (
         <nav className={styles.side_wrap}>
             <div className={styles.side_profile_wrap}>
                 <Image src={favi} alt="프로필" width={250} height={250} />
                 <div>
-                    <h4>닉네임</h4>
-                    <h5>shiro21.blog.address</h5>
+                    <h4>{userData.user.id}</h4>
+                    <h5>{userData.user.name}</h5>
                 </div>
             </div>
 

@@ -215,7 +215,8 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
                 subCategory:subCategory,
                 coverImage: url,
                 label:      mainLabel,
-                subLabel:   subLabel
+                subLabel:   subLabel,
+                owner:      item.owner
             });
 
             edit.save()
@@ -425,6 +426,83 @@ router.post("/deleted", coverMulter.single("coverImage"), async (req: Request, r
         })
     })
     .catch(err => console.log("Write Delete Err", err));
+});
+
+router.post("/commentCreate", async (req: Request, res: Response) => {
+
+    const { nick, password, comment, secret, isDeleted, owner } = req.body;
+
+    const comments = new models.Comment({
+        _id:        new mongoose.Types.ObjectId(),
+        createdAt:  new Date(),
+        updatedAt:  new Date(),
+
+        nick:       nick,
+        password:   password,
+        comment:    comment,
+        secret:     secret,
+        owner:      owner
+    });
+
+    await comments.save();
+    
+    models.Comment.find({ owner: owner, isDeleted: isDeleted })
+    .then(comment => {
+        res.status(200).json({
+            code: "y",
+            data: comment
+        });
+    })
+    .catch(err => console.log("Comment Find Err", err));
+    
+});
+
+router.post("/commentFind", async (req: Request, res: Response) => {
+    
+    const { owner, isDeleted } = req.body;
+
+    models.Comment.find({ owner: owner, isDeleted: isDeleted })
+    .then(comment => {
+        res.status(200).json({
+            code: "y",
+            data: comment
+        });
+    })
+    .catch(err => console.log("Comment Find Err", err));
+
+});
+
+router.post("/commentDelete", async (req: Request, res: Response) => {
+
+    const { nick, password, owner, isDeleted } = req.body;
+    
+    models.Comment.findOne({ nick: nick, password: password })
+    .then(_delete => {
+        if (_delete === null) {
+            res.status(200).json({
+                code: "password",
+                message: "패스워드가 다릅니다."
+            })
+        } else {
+
+            _delete.updatedAt = new Date();
+            _delete.isDeleted = true;
+
+            _delete.save();
+
+            models.Comment.find({ owner: owner, isDeleted: isDeleted })
+            .then(result => {
+                res.status(200).json({
+                    code: "y",
+                    data: result
+                })
+            })
+            .catch(err => console.log("Comment Delete Err", err));
+            
+        }
+        
+    })
+    .catch(err => console.log("Comment Delete Err", err));
 });
 
 router.post("/test", async (req: Request, res: Response) => {

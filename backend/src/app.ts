@@ -6,6 +6,12 @@ const app = express();
 import http from "http";
 const server = http.createServer(app);
 
+// import useragent from "express-useragent";
+// import AgentData from "./service/userAgent";
+// app.use(useragent.express());
+// app.use(AgentData);
+
+
 import cors from "cors";
 app.use(cors({ origin: "*", credentials: true }));
 

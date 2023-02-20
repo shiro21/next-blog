@@ -3,30 +3,47 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Chart from './chartjs';
 import favi from '@/public/favi.ico'
+import { UserAgentProps } from '@/pages/services/interface';
+import { useEffect, useState } from 'react';
+import moment from 'moment';
 
-const HomeManage = () => {
+const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
+
+    const [todayData, setTodayData] = useState<UserAgentProps[]>(agent);
+    const [yesterdayData, setYesterday] = useState<UserAgentProps[]>(agent);
+
+    useEffect(() => {
+        const yyy = new Date();
+        const today = moment().format('YYYY-MM-DD');
+        const yesterday = moment(new Date()).subtract(1, 'day').format('YYYY-MM-DD')
+        console.log(yesterday);
+        
+        setTodayData(agent.filter(data => moment(data.updatedAt).format('YYYY-MM-DD') === today))
+        setYesterday(agent.filter(data => moment(data.updatedAt).format('YYYY-MM-DD') === yesterday))
+
+    }, [])
     return (
         <>
             <div className={styles.box_wrap}>
                 <div className={styles.top_box}>
                     <dl>
                         <dt>오늘 방문자</dt>
-                        <dd>10</dd>
+                        <dd>{todayData.length}</dd>
                     </dl>
 
                     <dl>
                         <dt>어제 방문자</dt>
-                        <dd>10</dd>
+                        <dd>{yesterdayData.length}</dd>
                     </dl>
 
                     <dl>
                         <dt>누적 방문자</dt>
-                        <dd>20</dd>
+                        <dd>{agent.length}</dd>
                     </dl>
                 </div>
 
                 <div className={styles.mid_box}>
-                    <Chart />
+                    <Chart agent={agent} />
                 </div>
 
                 <div className={styles.bottom_box}>

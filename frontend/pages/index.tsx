@@ -19,6 +19,7 @@ import { userList } from '@/features/userSlice'
 
 function Main({ categoriesData, postsData, userData }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {

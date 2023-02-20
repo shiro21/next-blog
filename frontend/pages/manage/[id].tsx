@@ -11,19 +11,29 @@ import LinkManage from '../components/manage/link';
 import WriteManage from '../components/manage/write';
 import { api } from '../services/api';
 import { GetServerSideProps } from 'next';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ApiUserProps } from '../services/apiInterface';
 import { setTokenCookie } from '../api/refreshToken';
 import { useAppDispatch } from '@/store/store';
 import { userList } from '@/features/userSlice';
+import { UserAgentProps } from '../services/interface';
 
 const Manage = ({ userData }: { userData: ApiUserProps}) => {
 
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const [agent, setAgent] = useState<UserAgentProps[]>([]);
 
     useEffect(() => {
-        if (!userData.success) router.push("/login");
+        api.post("/user/userAgentLoad")
+        .then(res => {
+            if (res.data.code === "y") setAgent(res.data.data);
+        })
+        .catch(err => console.log("User Agent Err", err));
+    }, [])
+
+    useEffect(() => {
+        if (!userData.user) router.push("/login");
 
         dispatch(userList(userData.user));
     }, [router])
@@ -32,14 +42,18 @@ const Manage = ({ userData }: { userData: ApiUserProps}) => {
         <>
             <Seo title="관리자" />
             {
-                userData.success && <ManageHeader userData={userData} />
+                userData.user && <ManageHeader userData={userData} />
             }
 
             <article className={styles.manage_wrap}>
-                <ManageSide />
+                {
+                    userData.user && <ManageSide userData={userData} />
+                }
                 {
                     router.query.id === "home" && <section style={{flex: 1, padding: "1rem"}}>
-                        <HomeManage />
+                        {
+                            agent.length > 0 && <HomeManage agent={agent} />
+                        }
                     </section>
                 }
 
@@ -70,7 +84,7 @@ const Manage = ({ userData }: { userData: ApiUserProps}) => {
 export default Manage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  
+
     const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
   
     let userData = { success: false, user: null };

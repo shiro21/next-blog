@@ -156,4 +156,32 @@ router.post("/decode", (req: Request, res: Response) => {
     }
 });
 
+router.post("/userAgent", (req: Request, res: Response) => {
+
+    const { write, userAgent } = req.body;
+
+    const agent = new models.Agent({
+        _id:        new mongoose.Types.ObjectId(),
+        createdAt:  new Date(),
+        updatedAt:  new Date(),
+
+        write:      write,
+        userAgent:  userAgent
+    });
+
+    agent.save();
+});
+
+router.post("/userAgentLoad", (req: Request, res: Response) => {
+
+    models.Agent.find()
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result
+        });
+    })
+    .catch(err => console.log("Agent Load Err", err));
+});
+
 export default router;

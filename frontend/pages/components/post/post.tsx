@@ -1,4 +1,4 @@
-import { PostProps, UserProps } from '@/pages/services/interface';
+import { CommentProps, PostProps, UserProps } from '@/pages/services/interface';
 import styles from '@/styles/_post.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons';
@@ -6,7 +6,7 @@ import moment from 'moment';
 
 // Components
 import PostLists from './postList';
-import { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { api } from '@/pages/services/api';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useRouter } from 'next/router';
@@ -25,7 +25,7 @@ const Post = ({ item }: { item: PostProps }) => {
 
     useEffect(() => {
         setUser(userData);
-        console.log(selector.post.filter((post, index) => post.subLabel === item.subLabel));
+        // console.log(selector.post.filter((post, index) => post.subLabel === item.subLabel));
         // setListData((prev: any) => [...prev.slice(-4), selector.post.filter((post, index) => post.subLabel === item.subLabel)]);
         setListData(selector.post.filter((post, index) => post.subLabel === item.subLabel).slice(-5));
     }, [])
@@ -54,6 +54,44 @@ const Post = ({ item }: { item: PostProps }) => {
         })
         .catch(err => console.log("Deleted Err", err));
     }
+
+    const [comments, setComments] = useState({ nick: "", password: "", comment: "", secret: false, owner: item._id });
+    const [commentWrap, setCommentWrap] = useState([]);
+    const onComment = async () => {
+
+        if (item.owner.id === comments.nick) return alert("관리자의 닉네임은 사용할 수 없습니다.");
+
+        await api.post("/edit/commentCreate", comments)
+        .then(res => {
+            if (res.data.code === "y") {
+                setCommentWrap(res.data.data);
+                setComments({ nick: "", password: "", comment: "", secret: false, owner: item._id });
+            }
+        })
+        .catch(err => console.log("Comment Create Err", err));
+    }
+
+    const [commentDel, setCommentDel] = useState("");
+    const [commentPassword, setCommentPassword] = useState("");
+
+    useEffect(() => {
+        api.post("/edit/commentFind", { owner: item._id })
+        .then(res => {
+            if(res.data.code === "y") setCommentWrap(res.data.data);
+        })
+        .catch(err => console.log("Comment Find Err", err));
+    }, [commentWrap]);
+
+    const onDeleted = (item: CommentProps) => {
+        
+        api.post("/edit/commentDelete", { nick: item.nick, password: commentPassword, owner: item._id })
+        .then(res => {
+            if(res.data.code === "y") setCommentWrap(res.data.data);
+            else if (res.data.code === "password") return alert(res.data.message);
+        })
+        .catch(err => console.log("Comment Deleted Err", err));
+    }
+
     return (
         <section className={styles.contents_item}>
             {/* 제목 */}
@@ -113,42 +151,43 @@ const Post = ({ item }: { item: PostProps }) => {
             {/* 댓글 */}
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_info}>
-                    <input type="text" placeholder="닉네임" autoComplete="off" />
-                    <input type="password" placeholder="비밀번호" autoComplete="off" />
+                    <input type="text" value={comments.nick} onChange={(e:ChangeEvent<HTMLInputElement>) => setComments({...comments, nick: e.target.value})} placeholder="닉네임" autoComplete="off" />
+                    <input type="password" value={comments.password} onChange={(e:ChangeEvent<HTMLInputElement>) => setComments({...comments, password: e.target.value})} placeholder="비밀번호" autoComplete="off" />
                 </div>
-                <textarea />
+                <textarea value={comments.comment} onChange={(e:ChangeEvent<HTMLTextAreaElement>) => setComments({...comments, comment: e.target.value})} />
                 
                 <div className={styles.comments_button_wrap}>
                     <label htmlFor="secret">비밀글</label>
-                    <input type="checkbox" id="secret" name="secret" />
+                    <input type="checkbox" checked={comments.secret} onChange={(e: ChangeEvent<HTMLInputElement>) => {setComments({...comments, secret: e.target.checked})}} id="secret" name="secret" />
 
-                    <button type="button">확인</button>
+                    <button type="button" onClick={onComment}>확인</button>
                 </div>
 
             </div>
             {/* 댓글 */}
             <div className={styles.comments_list_wrap}>
                 <ul>
-                    <li>
-                        <div className={styles.comments_info}>이름 <span>2023.02.06 10:10</span></div>
-                        <div className={styles.comments}>댓글 내용입니다.</div>
-                        <div className={styles.comments_control}>
-                            {/* 관리자 닉네임은 사용하지 못하도록 설정하기 ( 관리자만 사용가능하도록 ) */}
-                            <button>삭제</button>
-                            <button>답글</button>
-                        </div>
-                    </li>
-
-                    <li>
-                        <div className={styles.comments_info}>이름 <span>2023.02.06 10:10</span></div>
-                        <div className={styles.comments}>댓글 내용입니다.</div>
-                        <div className={styles.comments_control}>
-                            {/* 관리자 닉네임은 사용하지 못하도록 설정하기 ( 관리자만 사용가능하도록 ) */}
-                            {/* 삭제는 비밀번호 입력하기 */}
-                            <button>삭제</button>
-                            <button>답글</button>
-                        </div>
-                    </li>
+                    {
+                        commentWrap.length > 0 && commentWrap.map((item: CommentProps, index) => (
+                            <React.Fragment key={index}>
+                                <li>
+                                    <div className={styles.comments_info}>{item.nick} <span>{moment(item.createdAt).format('YYYY년 MM월 DD일 HH:mm:ss')}</span></div>
+                                    <div className={styles.comments}>{item.secret ? "비밀글입니다~!" : item.comment}</div>
+                                    <div className={styles.comments_control}>
+                                        {/* 관리자 닉네임은 사용하지 못하도록 설정하기 ( 관리자만 사용가능하도록 ) */}
+                                        <button onClick={() => setCommentDel(item._id)}>삭제</button>
+                                        {
+                                            commentDel === item._id && <div style={{display: "flex", margin: "1rem 0"}}>
+                                                <input placeholder="비밀번호를 입력해주세요." type="password" style={{width: "100%", marginRight: ".5rem"}} value={commentPassword} onChange={(e: ChangeEvent<HTMLInputElement>) => setCommentPassword(e.target.value)} />
+                                                <button style={{marginRight: "1rem", whiteSpace: "nowrap"}} onClick={() => setCommentDel("")}>취소</button>
+                                                <button style={{whiteSpace: "nowrap"}} onClick={() => onDeleted(item)}>삭제</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </li>
+                            </React.Fragment>
+                        ))
+                    }
                 </ul>
             </div>
         </section>

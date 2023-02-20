@@ -7,13 +7,16 @@ import Post from '../post/post';
 import PostLists from '../post/postList';
 import { useAppSelector } from '@/store/store';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 const MainContents = () => {
 
     const selector = useAppSelector((state) => state.post);
+    const userSelector = useAppSelector((state) => state.user);
     const router = useRouter();
 
     const [posts, setPosts] = useState<PostProps[]>([]);
+    const [postList, setPostList] = useState<PostProps[]>([]);
     useEffect(() => {
 
         // 빈 오브젝트인지 판단하기
@@ -28,18 +31,26 @@ const MainContents = () => {
         } else {
             setPosts(selector.post);
         }
+
+        setPostList(selector.post.slice(-10));
     }, [selector])
 
 
     return (
         <article className={styles.contents_wrap}>
+            {
+                userSelector.user && <div className={styles.contents_profile} onClick={() => router.push("/manage/home")}>
+                    <Image src={userSelector.user.profile ? userSelector.user.profile : "/profile.jpg"} alt={userSelector.user.id || "이미지"} width={40} height={40} />
+                </div>
+            }
+            
             <h1>전체 글</h1>
 
             {/* 카테고리 글 박스 */}
             <div className={styles.category_contents}>
                 <ul>
                     {
-                        posts.length > 0 && posts.map((item: PostProps) => (
+                        postList.length > 0 && postList.map((item: PostProps) => (
                             <React.Fragment key={item._id}>
                                 <PostLists item={item} />
                             </React.Fragment>

@@ -13,6 +13,7 @@ import { useState } from 'react';
 const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
     
     const { id, email, name, profile } = userData.user;
+
     const [profileInfo, setProfileInfo] = useState<boolean>(false);
     const [noticeInfo, setNoticeInfo] = useState<boolean>(false);
 

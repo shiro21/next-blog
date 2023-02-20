@@ -24,6 +24,7 @@ router.post("/categoryAndPosts",  async (req: Request, res: Response) => {
     .catch(err => console.log("Category Find Err", err));
 
     await models.Write.find({ isDeleted: false })
+    .populate("owner")
     .sort({createdAt: -1})
     .then(arrPost => {
         posts = arrPost
@@ -45,6 +46,7 @@ router.post("/params",  async (req: Request, res: Response) => {
 
     if (item.type.params.length === 1) {
         await models.Write.find({ label: item.type.params, isDeleted: false })
+        .populate("owner")
         .sort({createdAt: -1})
         .then(arrPost => {
             posts = arrPost
@@ -52,6 +54,7 @@ router.post("/params",  async (req: Request, res: Response) => {
         .catch(err => console.log("Write Find Err", err));
     } else {
         await models.Write.find({ subLabel: item.type.params.at(-1), isDeleted: false })
+        .populate("owner")
         .sort({createdAt: -1})
         .then(arrPost => {
             posts = arrPost

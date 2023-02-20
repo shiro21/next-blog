@@ -16,74 +16,74 @@ import { postsList } from '@/features/postSlice'
 
 const MainParams = ({ categoriesData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-    useEffect(() => {
-      dispatch(categoriesList(categoriesData.category));
-      dispatch(postsList(postsData.post));
-    }, [categoriesData.category])
+  useEffect(() => {
+    dispatch(categoriesList(categoriesData.category));
+    dispatch(postsList(postsData.post));
+  }, [categoriesData.category])
 
-    const router = useRouter();
-    const [title, setTitle] = useState("");
-    
-    useEffect(() => {
-        
-        if (router.query.params === undefined) return;
+  const router = useRouter();
+  const [title, setTitle] = useState("");
+  
+  useEffect(() => {
+      
+      if (router.query.params === undefined) return;
 
-        setTitle(router.query.params[router.query.params.length - 1]);
-    }, [router]);
+      setTitle(router.query.params[router.query.params.length - 1]);
+  }, [router]);
 
 
-    return (
-        <>
-            <Seo title={title} />
-            <main className={styles.main}>
-                <Side />
-                <MainContents />
-            </main>
-        </>
-    );
+  return (
+      <>
+          <Seo title={title} />
+          <main className={styles.main}>
+              <Side />
+              <MainContents />
+          </main>
+      </>
+  );
 }
 
 export default MainParams;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  
-    const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
-    
-    let userData = { success: false, user: null };
-    let categoriesData = { success: false, category: [] };
-    let postsData = { success: false, post: [] };
 
-    if (context.params) {
-      await api.post("/total/params", { type: context.params })
+  const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
+  
+  let userData = { success: false, user: null };
+  let categoriesData = { success: false, category: [] };
+  let postsData = { success: false, post: [] };
+
+  if (context.params) {
+    await api.post("/total/params", { type: context.params })
+    .then(res => {
+      if (res.data.code === "y") {
+        categoriesData = { success: true, category: res.data.categories }
+        postsData = { success: true, post: res.data.posts }
+      }
+    })
+    .catch(err => console.log("Load Err", err));
+  }
+
+  if (isToken === "") userData = { success: false, user: null };
+  else {
+    try {
+      await api.post("/user/decode", { token: isToken })
       .then(res => {
         if (res.data.code === "y") {
-          categoriesData = { success: true, category: res.data.categories }
-          postsData = { success: true, post: res.data.posts }
+          setTokenCookie(isToken);
+          userData = { success: true, user: res.data.data.user };
         }
       })
-      .catch(err => console.log("Load Err", err));
-    }
-
-    if (isToken === "") userData = { success: false, user: null };
-    else {
-      try {
-        await api.post("/user/decode", { token: isToken })
-        .then(res => {
-          if (res.data.code === "y") {
-            setTokenCookie(isToken);
-            userData = { success: true, user: res.data.data.user };
-          }
-        })
-        .catch(err => console.log("Token Decode Err", err));
-      } catch (err) {
-        console.log(err);
-      };
-    }
-    
-    return {
-      props: { userData, categoriesData, postsData }
-    }
+      .catch(err => console.log("Token Decode Err", err));
+    } catch (err) {
+      console.log(err);
+    };
   }
+  
+  return {
+    props: { userData, categoriesData, postsData }
+  }
+}
   

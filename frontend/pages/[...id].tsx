@@ -3,18 +3,34 @@ import Side from './components/main/side';
 import Seo from "./components/Seo";
 import Post from "./components/post/post";
 
-import { fakedata } from './api/fakeData';
 import { setTokenCookie } from './api/refreshToken';
 import { api } from './services/api';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useAppDispatch } from '@/store/store';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { categoriesList } from '@/features/categorySlice';
 import { postsList } from '@/features/postSlice';
+import { PostProps } from './services/interface';
+import { useRouter } from 'next/router';
 
-const PostPage = ({ categoriesData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const PostPage = ({ categoriesData, postsData, userAgent }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
+  const router = useRouter();
   const dispatch = useAppDispatch();
+  const [post, setPost] = useState<PostProps | null>(null);
+
+  useEffect(() => {
+    if (router.query.id === undefined) return;
+    const writeId = router.query.id[0];
+
+    setPost(postsData.post.find((item: PostProps) => item._id === writeId));
+
+    const info = {
+      write: writeId,
+      userAgent: userAgent["user-agent"]
+    }
+    api.post("/user/userAgent", info);
+  }, [])
 
   useEffect(() => {
     dispatch(categoriesList(categoriesData.category));
@@ -28,7 +44,9 @@ const PostPage = ({ categoriesData, postsData }: InferGetServerSidePropsType<typ
           <article className={styles.post_wrap}>
               <Side />
               <div className={styles.post_contents}>
-                  <Post item={postsData.post} />
+                {
+                  post && <Post item={post} />
+                }
               </div>
           </article>
       </>
@@ -40,6 +58,9 @@ export default PostPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   
   const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
+
+  // userAgent 여기서만 실행하기
+  const userAgent = context.req.headers;
 
   let userData = { success: false, user: null };
   let categoriesData = { success: false, category: [] };
@@ -75,6 +96,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   
   return {
-    props: { userData, categoriesData, postsData }
+    props: { userData, categoriesData, postsData, userAgent }
   }
 }

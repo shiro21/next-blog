@@ -30,7 +30,9 @@ npm uninstall firebase-functions
 <!-- Moment -->
 npm install moment
 npm install moment-timezone
-
+<!-- User Agent -->
+npm install express-useragent
+npm install @types/express-useragent
 
 <!-- 아직 미설치 -->
 npm uninstall @firebase/app-types

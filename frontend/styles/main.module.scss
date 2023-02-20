@@ -10,9 +10,20 @@
 }
 
 .contents_wrap {
+    position: relative;
     flex: 1;
     padding: 1rem;
     margin-top: 3rem;
+    .contents_profile {
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid #DDD;
+        overflow: hidden;
+    }
     > h1 {
         font-size: $font_size_400;
         font-weight: $font_weight_semibold;
