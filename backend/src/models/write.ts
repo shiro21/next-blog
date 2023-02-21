@@ -14,7 +14,8 @@ const writeSchema = new mongoose.Schema({
     coverImage: String,
     label:      String,
     subLabel:   String,
-    owner:      { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+    owner:      { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    count:      { type: Number, default: 0 }
 });
 
 export default mongoose.model("Write", writeSchema);

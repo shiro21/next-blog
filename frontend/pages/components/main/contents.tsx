@@ -1,6 +1,6 @@
 import styles from '@/styles/main.module.scss'
 import { PostProps } from '@/pages/services/interface';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 // Components
 import Post from '../post/post';
@@ -8,6 +8,7 @@ import PostLists from '../post/postList';
 import { useAppSelector } from '@/store/store';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const MainContents = () => {
 
@@ -35,12 +36,24 @@ const MainContents = () => {
         setPostList(selector.post.slice(-10));
     }, [selector])
 
+    const [login, setLogin] = useState("");
+    const onLogin = () => {
+        if (login === "login") router.push("/login");
+        else alert("패스워드를 입력해주세요.");
+    }
+
 
     return (
         <article className={styles.contents_wrap}>
             {
                 userSelector.user && <div className={styles.contents_profile} onClick={() => router.push("/manage/home")}>
                     <Image src={userSelector.user.profile ? userSelector.user.profile : "/profile.jpg"} alt={userSelector.user.id || "이미지"} width={40} height={40} />
+                </div>
+            }
+            {
+                !userSelector.user && <div className={styles.contents_login}>
+                    <input type="text" value={login} onChange={(e: ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)} />
+                    <span onClick={onLogin}>Login</span>
                 </div>
             }
             

@@ -5,7 +5,7 @@ const agentSchema = new mongoose.Schema({
     updatedAt:      Date,
     createdAt:      Date,
 
-    write:          mongoose.Schema.Types.ObjectId,
+    write:          { type: mongoose.Schema.Types.ObjectId, ref: "Write" },
     userAgent:      String,
     
 });

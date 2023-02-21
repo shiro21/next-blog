@@ -3,42 +3,57 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Chart from './chartjs';
 import favi from '@/public/favi.ico'
-import { UserAgentProps } from '@/pages/services/interface';
+import { PostProps, UserAgentProps } from '@/pages/services/interface';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
+import { api } from '@/pages/services/api';
 
 const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
 
     const [todayData, setTodayData] = useState<UserAgentProps[]>(agent);
-    const [yesterdayData, setYesterday] = useState<UserAgentProps[]>(agent);
+    const [yesterdayData, setYesterdayData] = useState<UserAgentProps[]>(agent);
 
+    const [recentlyData, setRecentlyData] = useState([]);
+    const [popularData, setPopularData] = useState([]);
     useEffect(() => {
-        const yyy = new Date();
+
         const today = moment().format('YYYY-MM-DD');
         const yesterday = moment(new Date()).subtract(1, 'day').format('YYYY-MM-DD')
-        console.log(yesterday);
         
         setTodayData(agent.filter(data => moment(data.updatedAt).format('YYYY-MM-DD') === today))
-        setYesterday(agent.filter(data => moment(data.updatedAt).format('YYYY-MM-DD') === yesterday))
+        setYesterdayData(agent.filter(data => moment(data.updatedAt).format('YYYY-MM-DD') === yesterday))
+
+        api.post("/edit/statistics")
+        .then(res => {
+            if (res.data.code === "y") {
+                console.log(res.data);
+                setRecentlyData(res.data.recent);
+                setPopularData(res.data.popular);
+            }
+        })
+        .catch(err => console.log("Statistics Err", err));
 
     }, [])
+    console.log(recentlyData);
+    console.log(popularData);
+
     return (
         <>
             <div className={styles.box_wrap}>
                 <div className={styles.top_box}>
                     <dl>
                         <dt>오늘 방문자</dt>
-                        <dd>{todayData.length}</dd>
+                        <dd>{todayData.length / 2}</dd>
                     </dl>
 
                     <dl>
                         <dt>어제 방문자</dt>
-                        <dd>{yesterdayData.length}</dd>
+                        <dd>{yesterdayData.length / 2}</dd>
                     </dl>
 
                     <dl>
                         <dt>누적 방문자</dt>
-                        <dd>{agent.length}</dd>
+                        <dd>{agent.length / 2}</dd>
                     </dl>
                 </div>
 
@@ -51,18 +66,21 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
                         <h5>최근 7일 통계</h5>
                         <h6>인기 글</h6>
                         <ul>
-                            <li><Link href={"/"}><span>1.</span> 글 제목</Link></li>
-                            <li><Link href={"/"}><span>2.</span> 글 제목</Link></li>
-                            <li><Link href={"/"}><span>3.</span> 글 제목</Link></li>
+                            {
+                                recentlyData && recentlyData.map((item: PostProps, index) => (
+                                    <li key={index}>
+                                        <Link href={`/${item._id}`}><span>{index + 1}.</span> {item.title}</Link>
+                                    </li>
+                                ))
+                            }
                         </ul>
                     </div>
                     <div className={styles.box_right}>
                         <div className={styles.box_top}>
                             <h6>유입</h6>
                             <ul>
-                                <li>검색</li>
-                                <li>SNS</li>
-                                <li>기타</li>
+                                <li>Chrome: {agent.filter(data => data.userAgent.indexOf("Chrome")).length / 2}</li>
+                                <li>Safari: {agent.filter(data => data.userAgent.indexOf("Safari")).length / 2}</li>
                             </ul>
                         </div>
                         <div className={styles.box_bottom}>
@@ -79,31 +97,18 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
                 <div className={styles.rest_box}>
                     <h5>최근 글</h5>
                     <ul>
-                        {/* li 내부에 이미지, 제목 들어가야함 */}
-                        <li>
-                            <div className={styles.card_image}>
-                                <Image src={favi} alt="이미지" />
-                            </div>
-                            <div className={styles.card_title}>제목입니다.</div>
-                        </li>
-                        <li>
-                            <div className={styles.card_image}>
-                                <Image src={favi} alt="이미지" />
-                            </div>
-                            <div className={styles.card_title}>제목입니다.</div>
-                        </li>
-                        <li>
-                            <div className={styles.card_image}>
-                                <Image src={favi} alt="이미지" />
-                            </div>
-                            <div className={styles.card_title}>제목입니다.</div>
-                        </li>
-                        <li>
-                            <div className={styles.card_image}>
-                                <Image src={favi} alt="이미지" />
-                            </div>
-                            <div className={styles.card_title}>제목입니다.</div>
-                        </li>
+                        {
+                            popularData && popularData.map((item: PostProps, index) => (
+                                <li key={index}>
+                                    <Link href={`/${item._id}`}>
+                                        <div className={styles.card_image}>
+                                            <img src={item.coverImage} alt={item.title} />
+                                        </div>
+                                        <div className={styles.card_title}>{item.title}</div>
+                                    </Link>
+                                </li>
+                            ))
+                        }
                     </ul>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,6 +12,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import { faker } from '@faker-js/faker';
 import { UserAgentProps } from '@/pages/services/interface';
+import moment from 'moment';
 
 ChartJS.register(
     CategoryScale,
@@ -31,36 +32,46 @@ export const options = {
       },
       title: {
         display: true,
-        text: 'Chart.js Line Chart',
+        text: '유저 최근 글 방문 데이터',
       },
     },
-};
-
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Dataset 1',
-        // data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-    //   {
-    //     label: 'Dataset 2',
-    //     data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-    //     borderColor: 'rgb(53, 162, 235)',
-    //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    //   },
-    ],
+    ticks: {
+      // forces step size to be 50 units
+      stepSize: 1
+    }
 };
 
 const Chart = ({ agent }: { agent: UserAgentProps[] }) => {
-  console.log(faker.datatype.number({ min: 0, max: 1000 }));
-  console.log(agent.length);
-    return <Line options={options} data={data} />;
+
+  function getCurrentWeek() {
+    const day = new Date();
+    const sunday = day.getTime() - 86400000 * day.getDay();
+
+    day.setTime(sunday);
+
+    const result = [day.toISOString().slice(0, 10)];
+
+    for (let i = 1; i < 7; i++) {
+      day.setTime(day.getTime() + 86400000);
+      result.push(day.toISOString().slice(0, 10));
+    }
+
+    return result;
+  }
+
+  const getWeek = getCurrentWeek();
+
+  // console.log(getWeek.map(item => agent.filter(data => moment(data.updatedAt).format("YYYY-MM-DD") === item).length))
+
+  const [userData] = useState({
+    labels: getWeek,
+    datasets: [{
+      label: "User Data",
+      data: getWeek.map(item => agent.filter(data => moment(data.updatedAt).format("YYYY-MM-DD") === item).length)
+    }]
+  })
+
+    return <Line options={options} data={userData} />;
 }
 
 export default Chart;

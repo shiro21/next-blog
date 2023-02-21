@@ -505,6 +505,40 @@ router.post("/commentDelete", async (req: Request, res: Response) => {
     .catch(err => console.log("Comment Delete Err", err));
 });
 
+router.post("/statistics", async (req: Request, res: Response) => {
+
+    const d = new Date();
+    const year = d.getFullYear(); // 년
+    const month = d.getMonth();   // 월
+    const day = d.getDate();      // 일
+
+    let recentData;
+    let popularData;
+
+    await models.Write.find({createdAt: {$gte: new Date(year, month, day - 7).toLocaleDateString()}})
+    .sort({count: -1})
+    .limit(5)
+    .then(result => {
+        recentData = result;
+    })
+    .catch(err => console.log("Write Load Err", err));
+
+    await models.Write.find()
+    .sort({createdAt: -1})
+    .limit(5)
+    .then(result => {
+        popularData = result;
+    })
+    .catch(err => console.log("Write Load Err", err));
+
+    res.status(200).json({
+        code: "y",
+        recent: recentData,
+        popular: popularData
+    });
+
+});
+
 router.post("/test", async (req: Request, res: Response) => {
 
     const storage = fireStorage;

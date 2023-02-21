@@ -23,6 +23,23 @@
         border-radius: 50%;
         border: 1px solid #DDD;
         overflow: hidden;
+        > a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .contents_login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        width: 150px;
+        > span { padding-left: 1rem; cursor: pointer; }
     }
     > h1 {
         font-size: $font_size_400;

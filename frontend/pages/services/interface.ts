@@ -84,7 +84,7 @@ export interface PostListsProps {
             id: number
             title: string
             edit: string
-            image: string
+            coverImage: string
             tag: string[]
             createdAt: string
             updatedAt: string
@@ -97,7 +97,7 @@ export interface PostProps {
     _id: string,
     title: string,
     edit: string,
-    image: string,
+    coverImage: string,
     tag: string[],
     createdAt: string,
     updatedAt: string,

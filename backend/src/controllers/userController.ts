@@ -170,6 +170,15 @@ router.post("/userAgent", (req: Request, res: Response) => {
     });
 
     agent.save();
+
+    models.Write.findOne({ _id: write })
+    .then(_result => {
+        if (_result === null) return;
+        _result.count = _result.count + 1;
+
+        _result.save();
+    })
+    .catch(err => console.log("Write Count Err", err));
 });
 
 router.post("/userAgentLoad", (req: Request, res: Response) => {
