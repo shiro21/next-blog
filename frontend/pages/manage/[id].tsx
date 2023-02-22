@@ -10,15 +10,16 @@ import CategoryManage from '../components/manage/category';
 import LinkManage from '../components/manage/link';
 import WriteManage from '../components/manage/write';
 import { api } from '../services/api';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useEffect, useState } from 'react';
 import { ApiUserProps } from '../services/apiInterface';
 import { setTokenCookie } from '../api/refreshToken';
 import { useAppDispatch } from '@/store/store';
 import { userList } from '@/features/userSlice';
-import { UserAgentProps } from '../services/interface';
+import { PostProps, UserAgentProps } from '../services/interface';
+import { postsList } from '@/features/postSlice';
 
-const Manage = ({ userData }: { userData: ApiUserProps}) => {
+const Manage = ({ userData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const router = useRouter();
     const dispatch = useAppDispatch();
@@ -36,6 +37,7 @@ const Manage = ({ userData }: { userData: ApiUserProps}) => {
         if (!userData.user) router.push("/login");
 
         dispatch(userList(userData.user));
+        dispatch(postsList(postsData.post));
     }, [router])
 
     return (
@@ -88,6 +90,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
   
     let userData = { success: false, user: null };
+    let postsData = { success: false, post: [] };
+
+    await api.post("/edit/postsFind")
+    .then(res => {
+        if (res.data.code === "y") postsData = { success: true, post: res.data.data }
+    })
+    .catch(err => console.log("PostsList Find Err", err));
   
     if (isToken === "") userData = { success: false, user: null };
     else {
@@ -105,6 +114,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     
     return {
-      props: { userData }
+      props: { userData, postsData }
     }
 }

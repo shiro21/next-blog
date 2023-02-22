@@ -9,7 +9,7 @@ const ManageSide = ({ userData }: { userData: ApiUserProps }) => {
     return (
         <nav className={styles.side_wrap}>
             <div className={styles.side_profile_wrap}>
-                <Image src={favi} alt="프로필" width={250} height={250} />
+                <Image src={userData.user.profile} alt="프로필" width={250} height={250} />
                 <div>
                     <h4>{userData.user.id}</h4>
                     <h5>{userData.user.name}</h5>

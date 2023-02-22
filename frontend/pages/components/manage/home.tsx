@@ -43,17 +43,17 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
                 <div className={styles.top_box}>
                     <dl>
                         <dt>오늘 방문자</dt>
-                        <dd>{todayData.length / 2}</dd>
+                        <dd>{todayData.length}</dd>
                     </dl>
 
                     <dl>
                         <dt>어제 방문자</dt>
-                        <dd>{yesterdayData.length / 2}</dd>
+                        <dd>{yesterdayData.length}</dd>
                     </dl>
 
                     <dl>
                         <dt>누적 방문자</dt>
-                        <dd>{agent.length / 2}</dd>
+                        <dd>{agent.length}</dd>
                     </dl>
                 </div>
 
@@ -79,8 +79,8 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
                         <div className={styles.box_top}>
                             <h6>유입</h6>
                             <ul>
-                                <li>Chrome: {agent.filter(data => data.userAgent.indexOf("Chrome")).length / 2}</li>
-                                <li>Safari: {agent.filter(data => data.userAgent.indexOf("Safari")).length / 2}</li>
+                                <li>PC: {agent.filter(data => data.isMobile === false).length}</li>
+                                <li>Mobile: {agent.filter(data => data.isMobile === true).length}</li>
                             </ul>
                         </div>
                         <div className={styles.box_bottom}>

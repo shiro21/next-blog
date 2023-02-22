@@ -158,7 +158,7 @@ router.post("/decode", (req: Request, res: Response) => {
 
 router.post("/userAgent", (req: Request, res: Response) => {
 
-    const { write, userAgent } = req.body;
+    const { write, userAgent, isMobile } = req.body;
 
     const agent = new models.Agent({
         _id:        new mongoose.Types.ObjectId(),
@@ -166,7 +166,8 @@ router.post("/userAgent", (req: Request, res: Response) => {
         updatedAt:  new Date(),
 
         write:      write,
-        userAgent:  userAgent
+        userAgent:  userAgent,
+        isMobile:   isMobile
     });
 
     agent.save();
@@ -191,6 +192,98 @@ router.post("/userAgentLoad", (req: Request, res: Response) => {
         });
     })
     .catch(err => console.log("Agent Load Err", err));
+});
+
+router.post("/linkCreate", async (req: Request, res: Response) => {
+
+    const { link, linkName } = req.body;
+
+    const linkData = new models.Link({
+        _id:        new mongoose.Types.ObjectId(),
+        createdAt:  new Date(),
+        updatedAt:  new Date(),
+
+        link:       link,
+        linkName:   linkName
+    });
+
+    await linkData.save();
+
+    models.Link.find()
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result
+        });
+    })
+    .catch(err => console.log("Link Create Err", err));
+});
+
+router.post("/linkFind", (req: Request, res: Response) => {
+
+    const item = req.body;
+
+    models.Link.find(item)
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result
+        })
+    })
+    .catch(err => console.log("Link Find Err", err));
+});
+
+router.post("/linkUpdate", async (req: Request, res: Response) => {
+
+    const item = req.body;
+
+    await models.Link.findOne({_id: item._id})
+    .then(async _update => {
+        console.log(_update);
+        if (_update === null) return;
+
+        _update.updatedAt = new Date();
+        _update.link = item.updateLink;
+        _update.linkName = item.updateName;
+
+        await _update.save();
+
+        await models.Link.find({isDeleted: item.isDeleted})
+        .then(result => {
+            res.status(200).json({
+                code: "y",
+                data: result
+            })
+        })
+        .catch(err => console.log("Link Update Err", err));
+    })
+    .catch(err => console.log("Link Update Err", err));
+});
+
+
+router.post("/linkDelete", async (req: Request, res: Response) => {
+
+    const item = req.body;
+
+    await models.Link.findOne(item)
+    .then(async _delete => {
+        if (_delete === null) return;
+
+        _delete.updatedAt = new Date();
+        _delete.isDeleted = true;
+
+        await _delete.save();
+
+        await models.Link.find({isDeleted: item.isDeleted})
+        .then(result => {
+            res.status(200).json({
+                code: "y",
+                data: result
+            })
+        })
+        .catch(err => console.log("Link Find Err", err));
+    })
+    .catch(err => console.log("Link Delete Err", err));
 });
 
 export default router;

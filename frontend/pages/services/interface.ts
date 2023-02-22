@@ -134,4 +134,15 @@ export interface UserAgentProps {
 
     write:          string,
     userAgent:      string,
+    isMobile:       boolean
+}
+
+// Link
+export interface LinkProps {
+    _id:        string,
+    createdAt:  Date,
+    updatedAt:  Date,
+
+    link:       string,
+    linkName:   string
 }

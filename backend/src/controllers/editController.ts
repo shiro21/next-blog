@@ -539,6 +539,21 @@ router.post("/statistics", async (req: Request, res: Response) => {
 
 });
 
+router.post("/postsFind", async (req: Request, res: Response) => {
+
+    const item = req.body;
+
+    models.Write.find(item)
+    .populate("owner")
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result
+        });
+    })
+    .catch(err => console.log("Tag Find Err", err));
+});
+
 router.post("/test", async (req: Request, res: Response) => {
 
     const storage = fireStorage;

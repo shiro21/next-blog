@@ -7,7 +7,7 @@ const agentSchema = new mongoose.Schema({
 
     write:          { type: mongoose.Schema.Types.ObjectId, ref: "Write" },
     userAgent:      String,
-    
+    isMobile:       { type: Boolean, default: false }
 });
 
 export default mongoose.model("Agent", agentSchema);

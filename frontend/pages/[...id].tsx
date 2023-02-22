@@ -13,7 +13,7 @@ import { postsList } from '@/features/postSlice';
 import { PostProps } from './services/interface';
 import { useRouter } from 'next/router';
 
-const PostPage = ({ categoriesData, postsData, userAgent }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const PostPage = ({ categoriesData, postsData, userAgent, isMobile }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -27,7 +27,8 @@ const PostPage = ({ categoriesData, postsData, userAgent }: InferGetServerSidePr
 
     const info = {
       write: writeId,
-      userAgent: userAgent["user-agent"]
+      userAgent: userAgent["user-agent"],
+      isMobile: isMobile
     }
     api.post("/user/userAgent", info);
   }, [])
@@ -61,6 +62,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // userAgent 여기서만 실행하기
   const userAgent = context.req.headers;
+
+  const isMobile = Boolean(userAgent["user-agent"]?.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
 
   let userData = { success: false, user: null };
   let categoriesData = { success: false, category: [] };
@@ -96,6 +99,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   
   return {
-    props: { userData, categoriesData, postsData, userAgent }
+    props: { userData, categoriesData, postsData, userAgent, isMobile }
   }
 }

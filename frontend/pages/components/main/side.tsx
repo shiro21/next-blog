@@ -3,23 +3,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { CategoryProps, SubCategoryProps } from '@/pages/services/interface';
+import { CategoryProps, LinkProps, SubCategoryProps } from '@/pages/services/interface';
 
 import { useAppSelector } from '@/store/store';
 
 const Side = () => {
 
-
-    
     const [sideNav, setSideNav] = useState<boolean>(false);
     const [categoryWrap, setCategoryWrap] = useState<CategoryProps[]>([]);
+    const [linkWrap, setLinkWrap] = useState<LinkProps[]>([]);
 
     const mobileSideOpen = () => setSideNav(prev => !prev);
     
     const selector = useAppSelector((state) => (state.category));
+    const linkSelector = useAppSelector((state) => (state.link));
     // const onSelector = useMemo(() => setCategoryWrap(selector.category), [selector]);
     useEffect(() => {
-        setCategoryWrap(selector.category)
+        setCategoryWrap(selector.category);
+        setLinkWrap(linkSelector.link);
     }, [selector])
 
     return (
@@ -54,16 +55,20 @@ const Side = () => {
 
                 {/* 홈 목록 */}
                 <ul className={styles.nav_home_list}>
-                    <li>홈</li>
-                    <li>태그</li>
-                    <li>방명록</li>
+                    <li><Link href={"/"}>홈</Link></li>
+                    <li><Link href={"/tag"}>태그</Link></li>
+                    <li><Link href={"/guest"}>방명록</Link></li>
                 </ul>
 
                 {/* 나의 URL */}
                 <ul className={styles.nav_url_list}>
-                    <li>내 리스트</li>
-                    <li>내 리스트</li>
-                    <li>내 리스트</li>
+                    {
+                        linkWrap.length > 0 && linkWrap.map((item: LinkProps, index) => (
+                            <li key={index}>
+                                <a href={item.link} target="_blank" rel="noopener noreferrer">{item.linkName}</a>
+                            </li>
+                        ))
+                    }
                 </ul>
 
                 <div>

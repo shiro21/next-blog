@@ -15,6 +15,7 @@ router.post("/categoryAndPosts",  async (req: Request, res: Response) => {
 
     let categories;
     let posts;
+    let links;
 
     await models.Category.find()
     .populate("children")
@@ -31,10 +32,18 @@ router.post("/categoryAndPosts",  async (req: Request, res: Response) => {
     })
     .catch(err => console.log("Write Find Err", err));
 
+    await models.Link.find({ isDeleted: false })
+    .sort({createdAt: -1})
+    .then(arrLink => {
+        links = arrLink
+    })
+    .catch(err => console.log("Write Find Err", err));
+
     res.status(200).json({
         code: "y",
         categories: categories,
-        posts: posts
+        posts: posts,
+        links: links
     })
 });
 

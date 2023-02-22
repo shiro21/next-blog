@@ -14,10 +14,11 @@ import { categoriesList } from '@/features/categorySlice'
 import { useAppDispatch } from '@/store/store'
 import { postsList } from '@/features/postSlice'
 import { userList } from '@/features/userSlice'
+import { linksList } from '@/features/linkSlice'
 
 // const inter = Inter({ subsets: ['latin'] })
 
-function Main({ categoriesData, postsData, userData }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Main({ categoriesData, postsData, userData, linkData }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
 
   const dispatch = useAppDispatch();
@@ -26,6 +27,7 @@ function Main({ categoriesData, postsData, userData }: InferGetServerSidePropsTy
     dispatch(categoriesList(categoriesData.category));
     dispatch(postsList(postsData.post));
     dispatch(userList(userData.user));
+    dispatch(linksList(linkData.link));
   }, []);
 
 
@@ -49,6 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let userData = { success: false, user: null };
   let categoriesData = { success: false, category: [] };
   let postsData = { success: false, post: [] };
+  let linkData = { success: false, link: [] };
 
   try {
     await api.post("/total/categoryAndPosts")
@@ -56,6 +59,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       if (res.data.code === "y") {
         categoriesData = { success: true, category: res.data.categories }
         postsData = { success: true, post: res.data.posts }
+        linkData = { success: true, link: res.data.links }
       }
     })
     .catch(err => console.log("Category Load Err", err));
@@ -82,6 +86,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   
   return {
-    props: { userData, categoriesData, postsData }
+    props: { userData, categoriesData, postsData, linkData }
   }
 }

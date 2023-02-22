@@ -4,6 +4,7 @@ import type { TypedUseSelectorHook } from "react-redux";
 import postReducer from "@/features/postSlice";
 import categoryReducer from "@/features/categorySlice";
 import userReducer from "@/features/userSlice";
+import linkReducer from "@/features/linkSlice";
 
 // Slice
 
@@ -11,7 +12,8 @@ export const store = configureStore({
     reducer: {
         post: postReducer,
         category: categoryReducer,
-        user: userReducer
+        user: userReducer,
+        link: linkReducer
     }
 })
 

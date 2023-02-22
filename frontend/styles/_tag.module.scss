@@ -1,0 +1,25 @@
+@import "./color";
+
+.tag_wrap {
+    display: flex;
+    margin-bottom: 3rem;
+    .tag_contents {
+        width: 100%;
+        padding: 2rem;
+        margin-top: 7rem;
+        > h2 {
+            text-align: center;
+            font-size: $font_size_600;
+            font-weight: $font_weight_bold;
+        }
+        .tag_box {
+            margin: 1rem 1rem 0 1rem;
+            border: 1px solid #DDD;
+            padding: 1rem;
+            span {
+                display: inline-block;
+                padding: .3rem .5rem;
+            }
+        }
+    }
+}

@@ -6,6 +6,7 @@ import writeSchema from "../models/write";
 import likeSchema from "../models/like";
 import commentSchema from "../models/comment";
 import agentSchema from "../models/agent";
+import linkSchema from "../models/link";
 
 const models = {
     User: userSchema,
@@ -15,7 +16,8 @@ const models = {
     Write: writeSchema,
     Like: likeSchema,
     Comment: commentSchema,
-    Agent: agentSchema
+    Agent: agentSchema,
+    Link: linkSchema
 }
 
 export default models;
