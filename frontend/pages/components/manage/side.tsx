@@ -26,7 +26,6 @@ const ManageSide = ({ userData }: { userData: ApiUserProps }) => {
                     <li><Link href={"/manage/category"}>카테고리 관리</Link></li>
                     <li><Link href={"/manage/link"}>링크</Link></li>
                     <li><Link href={"/manage/write"}>글 관리</Link></li>
-                    <li>방문통계</li>
                 </ul>
             </div>
         </nav>

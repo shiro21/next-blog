@@ -1,3 +1,4 @@
+import { categoriesList } from '@/features/categorySlice';
 import { postsList } from '@/features/postSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import styles from '@/styles/_tag.module.scss'
@@ -18,9 +19,12 @@ const Tag = () => {
         
         if (selector.status === "idle") {
             (async () => {
-                await api.post("/edit/postsFind")
+                await api.post("/total/categoryAndPosts")
                 .then(res => {
-                    if (res.data.code === "y") dispatch(postsList(res.data.data));
+                    if (res.data.code === "y") {
+                        dispatch(postsList(res.data.posts));
+                        dispatch(categoriesList(res.data.categories));
+                    }
                 })
                 .catch(err => console.log("PostsList Find Err", err));
 
@@ -41,7 +45,7 @@ const Tag = () => {
 
     return (
         <>
-            <Seo title="제목 들어갈 자리" />
+            <Seo title="태그" />
   
             <article className={styles.tag_wrap}>
                 <Side />

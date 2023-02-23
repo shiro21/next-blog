@@ -48,7 +48,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
 
-  let userData = { success: false, user: null };
+  let userData = { success: false, user: {} };
   let categoriesData = { success: false, category: [] };
   let postsData = { success: false, post: [] };
   let linkData = { success: false, link: [] };
@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.log(err);
   }
 
-  if (isToken === "") userData = { success: false, user: null };
+  if (isToken === "") userData = { success: false, user: {} };
   else {
 
     try {

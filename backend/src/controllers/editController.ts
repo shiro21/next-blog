@@ -454,6 +454,18 @@ router.post("/commentCreate", async (req: Request, res: Response) => {
         });
     })
     .catch(err => console.log("Comment Find Err", err));
+
+    const notify = new models.Notify({
+        _id:        new mongoose.Types.ObjectId(),
+        createdAt:  new Date(),
+        updatedAt:  new Date(),
+
+        nick:       nick,
+        owner:      owner,
+        comment:   comment
+    });
+
+    notify.save();
     
 });
 

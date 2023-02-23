@@ -85,5 +85,44 @@ router.post("/params",  async (req: Request, res: Response) => {
     })
 });
 
+router.post("/guestCreate",  async (req: Request, res: Response) => {
+
+    const { contents, secret, nick, isDeleted } = req.body;
+
+    const guest = new models.Guest({
+        _id:        new mongoose.Types.ObjectId(),
+        createdAt:  new Date(),
+        updatedAt:  new Date(),
+
+        contents:   contents,
+        secret:     secret,
+        nick:       nick
+    });
+
+    await guest.save();
+
+    models.Guest.find({isDeleted: isDeleted})
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result
+        })
+    })
+    .catch(err => console.log("Guest Find Err", err));
+});
+
+router.post("/guestFind",  async (req: Request, res: Response) => {
+    const { isDeleted } = req.body;
+
+    models.Guest.find({isDeleted: isDeleted})
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result
+        })
+    })
+    .catch(err => console.log("Guest Find Err", err));
+});
+
 
 export default router;

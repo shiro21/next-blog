@@ -26,16 +26,13 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
         api.post("/edit/statistics")
         .then(res => {
             if (res.data.code === "y") {
-                console.log(res.data);
                 setRecentlyData(res.data.recent);
                 setPopularData(res.data.popular);
             }
         })
         .catch(err => console.log("Statistics Err", err));
 
-    }, [])
-    console.log(recentlyData);
-    console.log(popularData);
+    }, []);
 
     return (
         <>

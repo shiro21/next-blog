@@ -7,6 +7,8 @@ import likeSchema from "../models/like";
 import commentSchema from "../models/comment";
 import agentSchema from "../models/agent";
 import linkSchema from "../models/link";
+import guestSchema from "../models/guest";
+import notifySchema from "../models/notify";
 
 const models = {
     User: userSchema,
@@ -17,7 +19,9 @@ const models = {
     Like: likeSchema,
     Comment: commentSchema,
     Agent: agentSchema,
-    Link: linkSchema
+    Link: linkSchema,
+    Guest: guestSchema,
+    Notify: notifySchema
 }
 
 export default models;

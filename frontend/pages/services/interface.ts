@@ -146,3 +146,28 @@ export interface LinkProps {
     link:       string,
     linkName:   string
 }
+
+// Guest
+export interface GuestProps {
+    _id:        string,
+    createdAt:  Date,
+    updatedAt:  Date,
+    isDeleted:  boolean,
+
+    contents:   string,
+    secret:     boolean,
+    nick:       string
+}
+
+// Notify
+export interface NotifyProps {
+    _id:        string,
+    createdAt:  Date,
+    updatedAt:  Date,
+    isDeleted:  boolean,
+
+    nick:       string,
+    owner:      string,
+    comment:    string,
+    confirm:    boolean
+}

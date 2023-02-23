@@ -59,7 +59,9 @@ const Post = ({ item }: { item: PostProps }) => {
     const [commentWrap, setCommentWrap] = useState([]);
     const onComment = async () => {
 
-        if (item.owner.id === comments.nick) return alert("관리자의 닉네임은 사용할 수 없습니다.");
+        if (item.owner.id === comments.nick && !user) return alert("관리자의 닉네임은 사용할 수 없습니다.");
+        else if (comments.nick === "" || comments.password === "" && !user) return alert("아이디와 비밀번호를 확인해주세요.");
+        else if (comments.comment === "") return alert("내용을 입력해주세요.");
 
         await api.post("/edit/commentCreate", comments)
         .then(res => {
@@ -80,7 +82,7 @@ const Post = ({ item }: { item: PostProps }) => {
             if(res.data.code === "y") setCommentWrap(res.data.data);
         })
         .catch(err => console.log("Comment Find Err", err));
-    }, [commentWrap]);
+    }, []);
 
     const onDeleted = (item: CommentProps) => {
         

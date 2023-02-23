@@ -286,4 +286,16 @@ router.post("/linkDelete", async (req: Request, res: Response) => {
     .catch(err => console.log("Link Delete Err", err));
 });
 
+router.post("/notifyFind", async (req: Request, res: Response) => {
+
+    models.Notify.find({isDeleted: false})
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result
+        })
+    })
+    .catch(err => console.log("Notify Find Err", err));
+});
+
 export default router;

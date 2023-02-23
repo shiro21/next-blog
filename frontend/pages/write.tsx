@@ -78,7 +78,6 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
         let file = e.target.files[0];
 
         reader.onloadend = () => {
-            console.log(typeof reader.result);
             setPreview([{ file: file, imagePreviewUrl: reader.result }]);
         }
 
@@ -207,7 +206,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   
     const isToken = context.req.cookies["@nextjs-blog-token"] !== undefined ? context.req.cookies["@nextjs-blog-token"] : "";
   
-    let userData = { success: false, user: null };
+    let userData = { success: false, user: {} };
     let categoriesData = { success: false, category: [] }
   
     await api.post("/edit/categoryFind")
@@ -216,7 +215,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     })
     .catch(err => console.log("Category Load Err", err));
   
-    if (isToken === "") userData = { success: false, user: null };
+    if (isToken === "") userData = { success: false, user: {} };
     else {
       try {
         await api.post("/user/decode", { token: isToken })

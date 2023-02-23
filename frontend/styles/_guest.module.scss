@@ -1,0 +1,76 @@
+@import "./color";
+
+.guest_wrap {
+    display: flex;
+    margin-bottom: 3rem;
+    .guest_contents {
+        width: 100%;
+        padding: 2rem;
+        margin-top: 7rem;
+        > h2 {
+            text-align: center;
+            font-size: $font_size_600;
+            font-weight: $font_weight_bold;
+        }
+        .guest_box {
+            margin: 1rem 1rem 0 1rem;
+            border: 1px solid #DDD;
+            padding: 1rem;
+            span {
+                display: inline-block;
+                padding: .3rem .5rem;
+            }
+            .guest_input_wrap {
+                > textarea {
+                    width: 100%;
+                    height: 150px;
+                    resize: none;
+                    border: 1px solid #DDD;
+                }
+                .guest_button_wrap {
+                    display: flex;
+                    justify-content: right;
+                    align-items: center;
+                    width: 100%;
+                    margin-top: 1rem;
+                    > input[type=text] {
+                        width: 150px;
+                        margin-right: 1rem;
+                    }
+                    > label {
+                        font-size: $font_size_200;
+                        font-weight: $font_weight_semibold;
+                        padding-right: .5rem;
+                    }
+                    > button {
+                        font-size: $font_size_300;
+                        font-weight: $font_weight_semibold;
+                        margin-left: 3rem;
+                    }
+                }
+            }
+
+            .guest__ {
+                padding: 1rem 0;
+                margin: 1rem 0;
+                border-top: 3px solid #E9E9E9;
+                // border-bottom: 2px solid #DDD;
+                > ul {
+                    > li {
+                        > h5 { position: relative; font-size: $font_size_300; font-weight: $font_weight_semibold; margin-bottom: 1rem; > span { position: absolute; top: 0; right: 0; font-size: $font_size_100; font-weight: $font_weight_normal; color: $gray_color; } }
+                        .contents {
+                            font-size: $font_size_200;
+                        }
+                        .button_wrap {
+                            text-align: right;
+                            padding: 1rem 0;
+                            margin-bottom: 1rem;
+                            border-bottom: 1px solid #DDD;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}

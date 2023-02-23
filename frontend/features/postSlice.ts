@@ -15,8 +15,6 @@ export const postSlice = createSlice({
         postsList: (state, action: PayloadAction<PostProps[]>) => {
             state.status = "success";
             state.post = action.payload;
-            // console.log(state.post)
-            // console.log(action.payload)
         }
     },
     extraReducers: (builder) => {

@@ -8,10 +8,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { ApiUserProps } from '@/pages/services/apiInterface';
 import { removeTokenCookie } from '../login/tokenCookies';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { api } from '@/pages/services/api';
+import { NotifyProps } from '@/pages/services/interface';
+import moment from 'moment';
 
 const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
+
+    const [notify, setNotify] = useState([]);
+    useEffect(() => {
+        api.post("/user/notifyFind")
+        .then(res => {
+            if (res.data.code === "y") setNotify(res.data.data);
+        })
+        .catch(err => console.log("Notify Find Err", err));
+    }, [])
     
+    const router = useRouter();
     const { id, email, name, profile } = userData.user;
 
     const [profileInfo, setProfileInfo] = useState<boolean>(false);
@@ -20,6 +34,7 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
 
     const logOut = () => {
         removeTokenCookie();
+        router.push("/");
     }
 
     return (
@@ -56,6 +71,18 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
                                 <h4>새로운 소식</h4>
                                 <div className={styles.notice}>
                                     <ul>
+                                        {
+                                            notify.length > 0 && notify.map((item: NotifyProps, index) => (
+                                                <li key={index}>
+                                                    <div style={{flex: "1"}}>
+                                                        <Link href={`/${item.owner}`}>{item.comment}</Link>
+                                                    </div>
+                                                    <div style={{width: "80px"}}>
+                                                        {moment(item.createdAt).format('YYYY-MM-DD')}
+                                                    </div>
+                                                </li>
+                                            ))
+                                        }
                                         <li>
                                             <div style={{flex: "1"}}>
                                                 닉네임님이 댓글을 남겼습니다.<br />

@@ -14,7 +14,6 @@ const LinkManage = () => {
         api.post("/user/linkFind")
         .then(res => {
             if (res.data.code === "y") setLinkList(res.data.data);
-            console.log(res.data);
         })
         .catch(err => console.log("Link Find Err", err));
     }, [])

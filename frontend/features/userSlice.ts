@@ -13,6 +13,7 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         userList: (state, action: PayloadAction<UserProps>) => {
+            state.status = "success";
             state.user = action.payload;
         }
     },

@@ -20,6 +20,7 @@ const PostPage = ({ categoriesData, postsData, userAgent, isMobile }: InferGetSe
   const [post, setPost] = useState<PostProps | null>(null);
 
   useEffect(() => {
+    // 개발자모드에서 StrictMode라서 두번 실행되는점.
     if (router.query.id === undefined) return;
     const writeId = router.query.id[0];
 
@@ -31,12 +32,15 @@ const PostPage = ({ categoriesData, postsData, userAgent, isMobile }: InferGetSe
       isMobile: isMobile
     }
     api.post("/user/userAgent", info);
-  }, [])
 
-  useEffect(() => {
     dispatch(categoriesList(categoriesData.category));
     dispatch(postsList(postsData.post));
-  }, []);
+  }, [])
+
+  // useEffect(() => {
+  //   console.log("이것도 두번 ?");
+
+  // }, []);
   
   return (
       <>
@@ -65,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const isMobile = Boolean(userAgent["user-agent"]?.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
 
-  let userData = { success: false, user: null };
+  let userData = { success: false, user: {} };
   let categoriesData = { success: false, category: [] };
   let postsData = { success: false, post: [] };
 
@@ -82,7 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.log(err);
   }
 
-  if (isToken === "") userData = { success: false, user: null };
+  if (isToken === "") userData = { success: false, user: {} };
   else {
     try {
       await api.post("/user/decode", { token: isToken })
