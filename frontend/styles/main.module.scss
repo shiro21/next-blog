@@ -62,7 +62,7 @@
 // media query
 .nav {
     // display: none;
-    position: absolute;
+    position: fixed;
     height: 100%;
     top: 0;
     bottom: 0;
@@ -136,7 +136,8 @@
         position: relative;
         left: 0;
         display: block;
-        border-right: 1px solid #DDD;
+        // border-right: 1px solid #DDD;
+        border: 0;
         padding: 4rem 2rem;
         > h2 {
             font-size: $font_size_400;

@@ -486,10 +486,10 @@ router.post("/commentFind", async (req: Request, res: Response) => {
 
 router.post("/commentDelete", async (req: Request, res: Response) => {
 
-    const { nick, password, owner, isDeleted } = req.body;
+    const { _id, password, owner, isDeleted } = req.body;
     
-    models.Comment.findOne({ nick: nick, password: password })
-    .then(_delete => {
+    await models.Comment.findOne({ _id: _id, password: password })
+    .then(async _delete => {
         if (_delete === null) {
             res.status(200).json({
                 code: "password",
@@ -500,8 +500,8 @@ router.post("/commentDelete", async (req: Request, res: Response) => {
             _delete.updatedAt = new Date();
             _delete.isDeleted = true;
 
-            _delete.save();
-
+            await _delete.save();
+            
             models.Comment.find({ owner: owner, isDeleted: isDeleted })
             .then(result => {
                 res.status(200).json({

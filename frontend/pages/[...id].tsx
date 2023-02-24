@@ -3,7 +3,6 @@ import Side from './components/main/side';
 import Seo from "./components/Seo";
 import Post from "./components/post/post";
 
-import { setTokenCookie } from './api/refreshToken';
 import { api } from './services/api';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useAppDispatch } from '@/store/store';
@@ -92,7 +91,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       await api.post("/user/decode", { token: isToken })
       .then(res => {
         if (res.data.code === "y") {
-          setTokenCookie(isToken);
           userData = { success: true, user: res.data.data.user };
         }
       })

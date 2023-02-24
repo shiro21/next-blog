@@ -13,7 +13,8 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         userList: (state, action: PayloadAction<UserProps>) => {
-            state.status = "success";
+            if (action.payload) state.status = "success";
+            else state.status = "idle";
             state.user = action.payload;
         }
     },

@@ -20,7 +20,8 @@ const appApi = axios.create({
     baseURL: baseUrl,
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    withCredentials: true
 });
 
 export { api, formApi, appApi };

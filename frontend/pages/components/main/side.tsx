@@ -21,7 +21,7 @@ const Side = () => {
     useEffect(() => {
         setCategoryWrap(selector.category);
         setLinkWrap(linkSelector.link);
-    }, [selector])
+    }, [selector]);
 
     return (
         <>

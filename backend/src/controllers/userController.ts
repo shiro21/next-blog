@@ -289,6 +289,7 @@ router.post("/linkDelete", async (req: Request, res: Response) => {
 router.post("/notifyFind", async (req: Request, res: Response) => {
 
     models.Notify.find({isDeleted: false})
+    .limit(30)
     .then(result => {
         res.status(200).json({
             code: "y",
@@ -297,5 +298,27 @@ router.post("/notifyFind", async (req: Request, res: Response) => {
     })
     .catch(err => console.log("Notify Find Err", err));
 });
+
+router.post("/notifyConfirm", async (req: Request, res: Response) => {
+
+    const item = req.body;
+
+    models.Notify.findOne(item)
+    .then(_update => {
+
+        if (_update === null) return;
+
+        _update.updatedAt = new Date();
+        _update.confirm = true;
+
+        _update.save();
+        
+    })
+});
+
+// router.post("/refresh", async (req: Request, res: Response) => {
+    
+//     console.log(req.body);
+// });
 
 export default router;

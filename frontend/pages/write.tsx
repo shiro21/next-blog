@@ -2,7 +2,6 @@ import * as React from 'react';
 import dynamic from 'next/dynamic';
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
 import { api } from './services/api';
-import { setTokenCookie } from './api/refreshToken';
 // import { categoriesList } from '@/features/categorySlice';
 // import { useAppDispatch } from '@/store/store';
 import { CategoryProps, PostProps, SubCategoryProps } from './services/interface';
@@ -221,7 +220,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         await api.post("/user/decode", { token: isToken })
         .then(res => {
           if (res.data.code === "y") {
-            setTokenCookie(isToken);
             userData = { success: true, user: res.data.data.user };
           }
         })

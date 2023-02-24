@@ -9,8 +9,8 @@ export const setTokenCookie = async (token: string) => {
     })
 }
 
-export const removeTokenCookie = () => {
-    fetch("/api/logout", {
+export const removeTokenCookie = async () => {
+    await fetch("/api/logout", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

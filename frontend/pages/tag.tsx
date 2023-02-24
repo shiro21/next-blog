@@ -1,6 +1,5 @@
 import { categoriesList } from '@/features/categorySlice';
-import { postsList } from '@/features/postSlice';
-import { useAppDispatch, useAppSelector } from '@/store/store';
+import { useAppDispatch } from '@/store/store';
 import styles from '@/styles/_tag.module.scss'
 import React, { useEffect, useState } from 'react';
 import Side from './components/main/side';
@@ -11,37 +10,39 @@ import { PostProps } from './services/interface';
 const Tag = () => {
 
     const dispatch = useAppDispatch();
-    const selector = useAppSelector((state) => state.post);
 
     const [tags, setTags] = useState<string[]>([]);
     
     useEffect(() => {
         
-        if (selector.status === "idle") {
-            (async () => {
-                await api.post("/total/categoryAndPosts")
-                .then(res => {
-                    if (res.data.code === "y") {
-                        dispatch(postsList(res.data.posts));
-                        dispatch(categoriesList(res.data.categories));
-                    }
-                })
-                .catch(err => console.log("PostsList Find Err", err));
+        let posts: PostProps[] = [];
 
-            })()
-        }
-        
-        let tagArr: string[] = [];
-        selector.post.map((item:PostProps) => {
-            item.tag.map((t) => {
-                tagArr.push(t);
+        (async () => {
+            await api.post("/total/categoryAndPosts")
+            .then(res => {
+                if (res.data.code === "y") {
+                    posts = res.data.posts;
+                    dispatch(categoriesList(res.data.categories));
+
+                    let tagArr: string[] = [];
+                    posts.map((item:PostProps) => {
+                        item.tag.map((t) => {
+                            tagArr.push(t);
+                        })
+                    });
+            
+                    // 중복 태그 점수주기
+                    const newArr = (tagArr: any[]) => tagArr.reduce((x, y) => ({ ...x, [y]: (x[y] || 0) + 1 }), {});
+                    let arr = newArr(tagArr);
+                    setTags(arr);
+                }
             })
-        });
+            .catch(err => console.log("PostsList Find Err", err));
 
-        const newArr = (tagArr: any[]) => tagArr.reduce((x, y) => ({ ...x, [y]: (x[y] || 0) + 1 }), {});
-        let arr = newArr(tagArr);
-        setTags(arr)
-    }, [selector])
+        })()
+        
+
+    }, [])
 
     return (
         <>

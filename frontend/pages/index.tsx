@@ -2,19 +2,21 @@
 // import { Inter } from '@next/font/google'
 import styles from '@/styles/main.module.scss'
 import Seo from './components/Seo'
+import jwt from 'jsonwebtoken'
 
 // Component
 import Side from './components/main/side'
 import MainContents from './components/main/contents'
 import { api } from './services/api'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import { setTokenCookie } from './api/refreshToken'
 import { useEffect } from 'react'
 import { categoriesList } from '@/features/categorySlice'
 import { useAppDispatch } from '@/store/store'
 import { postsList } from '@/features/postSlice'
 import { userList } from '@/features/userSlice'
 import { linksList } from '@/features/linkSlice'
+import cookies from 'next-cookies'
+import { setTokenCookie } from './api/refreshToken';
 
 // const inter = Inter({ subsets: ['latin'] })
 
@@ -66,20 +68,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (err) {
     console.log(err);
   }
-
+  
   if (isToken === "") userData = { success: false, user: {} };
   else {
 
     try {
-      setTokenCookie(isToken);
 
-      await api.post("/user/decode", { token: isToken })
-      .then(res => {
-        if (res.data.code === "y") {
-          userData = { success: true, user: res.data.data.user };
-        }
-      })
-      .catch(err => console.log("Token Decode Err", err));
+      // 토큰 시간 갱신해주기. 아래 방법으로 쿠키 가져오는게 더 깔끔한듯.
+      const refreshToken = cookies(context)["@nextjs-blog-token"] || "";
+      await setTokenCookie(context, refreshToken);
+
+      const token: any = jwt.decode(refreshToken, { complete: true });
+      
+      if (token === null) userData = { success: false, user: {} };
+      else userData = { success: true, user: token.payload.user };
+
     } catch (err) {
       console.log(err);
     };

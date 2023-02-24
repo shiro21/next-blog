@@ -8,7 +8,6 @@ import moment from "moment";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { postsList } from "@/features/postSlice";
 import { categoriesList } from "@/features/categorySlice";
-import { setTokenCookie } from "./api/refreshToken";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { userList } from "@/features/userSlice";
 
@@ -31,7 +30,6 @@ const Guest = ({ userData }: InferGetServerSidePropsType<typeof getServerSidePro
                 await api.post("/total/categoryAndPosts")
                 .then(res => {
                     if (res.data.code === "y") {
-                        dispatch(postsList(res.data.posts));
                         dispatch(categoriesList(res.data.categories));
                     }
                 })
@@ -56,7 +54,11 @@ const Guest = ({ userData }: InferGetServerSidePropsType<typeof getServerSidePro
 
         api.post("/total/guestCreate", guest)
         .then(res => {
-            if (res.data.code === "y") setGuestData(res.data.data);
+            if (res.data.code === "y") {
+                setContents("");
+                setNick("");
+                setGuestData(res.data.data);
+            }
         })
         .catch(err => console.log("Guest Create Err", err));
     }
@@ -118,7 +120,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     else {
   
       try {
-        setTokenCookie(isToken);
   
         await api.post("/user/decode", { token: isToken })
         .then(res => {

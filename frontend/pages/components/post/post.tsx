@@ -84,10 +84,11 @@ const Post = ({ item }: { item: PostProps }) => {
         .catch(err => console.log("Comment Find Err", err));
     }, []);
 
-    const onDeleted = (item: CommentProps) => {
+    const onDeleted = async (item: CommentProps) => {
         
-        api.post("/edit/commentDelete", { nick: item.nick, password: commentPassword, owner: item._id })
+        await api.post("/edit/commentDelete", { _id: item._id, password: commentPassword, owner: item.owner })
         .then(res => {
+            console.log(res.data);
             if(res.data.code === "y") setCommentWrap(res.data.data);
             else if (res.data.code === "password") return alert(res.data.message);
         })

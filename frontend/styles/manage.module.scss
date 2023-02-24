@@ -92,6 +92,10 @@
                                 display: flex;
                                 align-items: flex-end;
                                 justify-content: space-between;
+                                margin: .5rem;
+                                padding: .5rem;
+                                padding-right: .8rem;
+                                border-radius: 16px;
                                 > div { text-align: left; &:last-child { text-align: right; } }
                             }
                         }

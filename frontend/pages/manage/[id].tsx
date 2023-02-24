@@ -13,7 +13,6 @@ import { api } from '../services/api';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useEffect, useState } from 'react';
 import { ApiUserProps } from '../services/apiInterface';
-import { setTokenCookie } from '../api/refreshToken';
 import { useAppDispatch } from '@/store/store';
 import { userList } from '@/features/userSlice';
 import { PostProps, UserAgentProps } from '../services/interface';
@@ -34,7 +33,7 @@ const Manage = ({ userData, postsData }: InferGetServerSidePropsType<typeof getS
     }, [])
 
     useEffect(() => {
-        if (!userData.user) router.push("/login");
+        if (!userData.user._id) router.push("/login");
 
         dispatch(userList(userData.user));
         dispatch(postsList(postsData.post));
@@ -103,7 +102,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         try {
           await api.post("/user/decode", { token: isToken })
           .then(res => {
-            setTokenCookie(isToken);
             if (res.data.code === "y") userData = { success: true, user: res.data.data.user };
           })
           .catch(err => console.log("Token Decode Err", err));

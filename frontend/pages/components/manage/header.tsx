@@ -32,9 +32,15 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
     const [noticeInfo, setNoticeInfo] = useState<boolean>(false);
 
 
-    const logOut = () => {
-        removeTokenCookie();
+    const logOut = async () => {
+        await removeTokenCookie();
         router.push("/");
+    }
+
+    const onMove = (item: NotifyProps) => {
+        if (item.confirm === false) api.post("/user/notifyConfirm", item);
+        
+        router.push(`/${item.owner}`);
     }
 
     return (
@@ -73,9 +79,10 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
                                     <ul>
                                         {
                                             notify.length > 0 && notify.map((item: NotifyProps, index) => (
-                                                <li key={index}>
-                                                    <div style={{flex: "1"}}>
-                                                        <Link href={`/${item.owner}`}>{item.comment}</Link>
+                                                <li key={index} style={{background: item.confirm === false ? "#EEE" : ""}}>
+                                                    <div style={{flex: "1", paddingRight: ".5rem", cursor: "pointer"}} onClick={() => onMove(item)}>
+                                                        {item.comment}<br /><span style={{float: "right"}}>- {item.nick}</span>
+                                                        {/* <Link href={`/${item.owner}`}>{item.comment} <span>- {item.nick}</span></Link> */}
                                                     </div>
                                                     <div style={{width: "80px"}}>
                                                         {moment(item.createdAt).format('YYYY-MM-DD')}
@@ -83,7 +90,7 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
                                                 </li>
                                             ))
                                         }
-                                        <li>
+                                        {/* <li>
                                             <div style={{flex: "1"}}>
                                                 닉네임님이 댓글을 남겼습니다.<br />
                                                 "항상 잘 보고 있습니다."
@@ -91,7 +98,7 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
                                             <div style={{width: "80px"}}>
                                                 2023.02.03
                                             </div>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
                             </div>
