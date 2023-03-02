@@ -6,7 +6,6 @@ import { api } from "./services/api";
 import { GuestProps } from "./services/interface";
 import moment from "moment";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { postsList } from "@/features/postSlice";
 import { categoriesList } from "@/features/categorySlice";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { userList } from "@/features/userSlice";
@@ -73,7 +72,7 @@ const Guest = ({ userData }: InferGetServerSidePropsType<typeof getServerSidePro
                     <h2>Guest</h2>
                     <div className={styles.guest_box}>
                         <div className={styles.guest_input_wrap}>
-                            <textarea name="" id="" value={contents} onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContents(e.target.value)} />
+                            <textarea placeholder="관리자에게 하고 싶은 말을 작성해주세요." value={contents} onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContents(e.target.value)} />
                             <div className={styles.guest_button_wrap}>
                                 <input type="text" placeholder="닉네임을 입력해주세요." value={nick} onChange={(e: ChangeEvent<HTMLInputElement>) => setNick(e.target.value)} />
                                 <label htmlFor="sec">비밀글</label>

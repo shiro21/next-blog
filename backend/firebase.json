@@ -1,0 +1,15 @@
+{
+  "functions": [
+    {
+      "source": ".",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "blog-next-c18f3-firebase-adminsdk-zai6g-75c3aac7a7.json"
+      ]
+    }
+  ]
+}

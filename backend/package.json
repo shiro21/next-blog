@@ -2,14 +2,17 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/app.js",
     "build": "tsc -p .",
-    "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/app.ts"
+    "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/app.ts",
+    "deploy": "firebase deploy --only functions"
   },
-  "keywords": [],
+  "keywords": [
+    "express"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -37,6 +40,7 @@
     "express-useragent": "^1.0.15",
     "firebase": "^9.17.1",
     "firebase-admin": "^11.5.0",
+    "firebase-functions": "^4.2.1",
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
@@ -44,5 +48,8 @@
     "multer": "^1.4.5-lts.1",
     "multer-firebase-storage": "^4.1.2",
     "nodemailer": "^6.9.1"
+  },
+  "engines": {
+    "node": "16"
   }
 }

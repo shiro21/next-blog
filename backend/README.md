@@ -26,7 +26,7 @@ npm install multer
 npm install @types/multer
 <!-- Firebase -->
 npm install multer-firebase-storage
-npm uninstall firebase-functions
+npm install firebase-functions firebase-admin
 <!-- Moment -->
 npm install moment
 npm install moment-timezone

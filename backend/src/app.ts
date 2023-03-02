@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
+import * as functions from "firebase-functions";
 import "dotenv/config";
 
 const app = express();
@@ -6,6 +7,13 @@ const app = express();
 import http from "http";
 const server = http.createServer(app);
 
+app.use(function(req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "GET, POST");
+    next();
+});
 // import useragent from "express-useragent";
 // import AgentData from "./service/userAgent";
 // app.use(useragent.express());
@@ -65,11 +73,5 @@ server.listen(PORT, () => {
 
     console.log(message);
 });
-// app.listen(PORT, () => {
-//     const message = `
-//         [ Shiro21 Blog Project ]
-//         Running PORT: localhost:${PORT}
-//     `;
 
-//     console.log(message);
-// });
+export const api = functions.region("asia-northeast3").https.onRequest(app);

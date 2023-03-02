@@ -1,7 +1,7 @@
 import { CommentProps, PostProps, UserProps } from '@/pages/services/interface';
 import styles from '@/styles/_post.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 
 // Components
@@ -88,7 +88,6 @@ const Post = ({ item }: { item: PostProps }) => {
         
         await api.post("/edit/commentDelete", { _id: item._id, password: commentPassword, owner: item.owner })
         .then(res => {
-            console.log(res.data);
             if(res.data.code === "y") setCommentWrap(res.data.data);
             else if (res.data.code === "password") return alert(res.data.message);
         })
@@ -142,7 +141,7 @@ const Post = ({ item }: { item: PostProps }) => {
 
             {/* 삭제 수정 */}
             {
-                user && <div className={styles.write_options}>
+                userData._id && <div className={styles.write_options}>
                     <ul>
                         <li onClick={() => router.push({ pathname: "/write", query: {post: JSON.stringify(item)}}, "/write")}>수정</li>
                         <li onClick={postDeleted}>삭제</li>
