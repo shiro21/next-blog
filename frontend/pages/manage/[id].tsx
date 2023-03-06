@@ -9,13 +9,13 @@ import Seo from '../components/Seo';
 import CategoryManage from '../components/manage/category';
 import LinkManage from '../components/manage/link';
 import WriteManage from '../components/manage/write';
+import ProfileManage from '../components/manage/profile';
 import { api } from '../services/api';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useEffect, useState } from 'react';
-import { ApiUserProps } from '../services/apiInterface';
 import { useAppDispatch } from '@/store/store';
 import { userList } from '@/features/userSlice';
-import { PostProps, UserAgentProps } from '../services/interface';
+import { UserAgentProps } from '../services/interface';
 import { postsList } from '@/features/postSlice';
 
 const Manage = ({ userData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -73,6 +73,12 @@ const Manage = ({ userData, postsData }: InferGetServerSidePropsType<typeof getS
                 {
                     router.query.id === "write" && <section style={{flex: 1, padding: "1rem"}}>
                         <WriteManage />
+                    </section>
+                }
+
+                {
+                    router.query.id === "profile" && <section style={{flex: 1, padding: "1rem"}}>
+                        <ProfileManage />
                     </section>
                 }
             </article>

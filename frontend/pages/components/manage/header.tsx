@@ -110,7 +110,8 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
                             profileInfo && <div className={styles.profile_wrap}>
                                 <div className={styles.profile_name}>
                                     {id}<span style={{paddingLeft: "4px"}}>{name}</span><br />
-                                    <span>{email}</span>
+                                    <span>{email}</span><br />
+                                    <button type="button"><Link href={"/manage/profile"}>프로필 변경</Link></button>
                                 </div>
                                 
                                 <button type="button" onClick={logOut}>로그아웃</button>

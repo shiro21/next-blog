@@ -11,5 +11,11 @@
         "blog-next-c18f3-firebase-adminsdk-zai6g-75c3aac7a7.json"
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/**",
+      "function": "api"
+    }
   ]
 }
