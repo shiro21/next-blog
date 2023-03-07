@@ -12,7 +12,7 @@ import WriteManage from '../components/manage/write';
 import ProfileManage from '../components/manage/profile';
 import { api } from '../services/api';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch } from '@/store/store';
 import { userList } from '@/features/userSlice';
 import { UserAgentProps } from '../services/interface';

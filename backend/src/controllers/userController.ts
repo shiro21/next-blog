@@ -3,6 +3,8 @@ import "dotenv/config";
 import models from "../config/models";
 import { crypto, mongoose, jwt } from "../config/plugins";
 import { userEmail } from "../service/emailService";
+import { coverMulter } from "../service/uploadService";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 const router = express.Router();
 
 router.post("/emailConfirm", async (req: Request, res: Response) => {
@@ -94,6 +96,49 @@ router.post("/create", async (req: Request, res: Response) => {
         })
     })
     .catch(err => console.log("Register Create Err"));
+})
+
+router.post("/update", coverMulter.single("file"), async (req: Request, res: Response) => {
+
+    const file: any | Express.Multer.File = req.file;
+    const { _id, blog_name, nick_name, subscribe } = req.body;
+
+    const storage = getStorage();
+    let imageData = "";
+
+    if (file !== undefined) {
+        await getDownloadURL(ref(storage, file.path))
+        .then((url: string) => {
+            imageData = url;
+        })
+        .catch(err => console.log("Image Err", err));
+    }
+
+    await models.User.findOne({_id: _id})
+    .then(_update => {
+
+        if (_update === null) return;
+
+        _update.updatedAt = new Date();
+        _update.id = blog_name;
+        _update.name = nick_name;
+        _update.subscribe = subscribe;
+        if (imageData !== "") _update.profile = imageData
+
+        _update.save()
+        .then(result => {
+            jwt.sign({user: _update}, "secretkey", {expiresIn: "1 days"}, (err, token) => {
+                res.status(200).json({
+                    code: "y",
+                    token: token,
+                    data: result
+                })
+            })
+        })
+        .catch(err => console.log("User Update Err", err));
+    })
+    .catch(err => console.log("User Update Err", err));
+
 })
 
 router.post("/login", (req: Request, res: Response) => {

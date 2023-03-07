@@ -28,7 +28,8 @@ export interface UserProps {
     role:       string,
     roleLabel:  string,
     name:       string,
-    profile:    string
+    profile:    string,
+    subscribe:  string
 }
 
 // Category

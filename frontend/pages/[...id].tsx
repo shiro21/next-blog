@@ -35,11 +35,6 @@ const PostPage = ({ categoriesData, postsData, userAgent, isMobile }: InferGetSe
     dispatch(categoriesList(categoriesData.category));
     dispatch(postsList(postsData.post));
   }, [])
-
-  // useEffect(() => {
-  //   console.log("이것도 두번 ?");
-
-  // }, []);
   
   return (
       <>

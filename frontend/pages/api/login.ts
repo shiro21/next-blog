@@ -3,8 +3,8 @@ import cookie from "cookie";
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
 
-    console.log(req.body.token);
-    console.log(res.getHeader("get-cookie"))
+    // console.log(req.body.token);
+    // console.log(res.getHeader("get-cookie"))
     res.setHeader(
         "Set-Cookie",
         cookie.serialize("@nextjs-blog-token", req.body.token, {

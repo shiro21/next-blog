@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     role:       String,
     roleLabel:  String,
     name:       String,
-    profile:    String
+    profile:    String,
+    subscribe:  { type: String, default: "" }
 });
 
 export default mongoose.model("User", userSchema);

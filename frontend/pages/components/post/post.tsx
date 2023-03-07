@@ -154,7 +154,7 @@ const Post = ({ item }: { item: PostProps }) => {
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_info}>
                     <input type="text" value={comments.nick} onChange={(e:ChangeEvent<HTMLInputElement>) => setComments({...comments, nick: e.target.value})} placeholder="닉네임" autoComplete="off" />
-                    <input type="password" value={comments.password} onChange={(e:ChangeEvent<HTMLInputElement>) => setComments({...comments, password: e.target.value})} placeholder="비밀번호" autoComplete="off" />
+                    <input type="text" value={comments.password} onChange={(e:ChangeEvent<HTMLInputElement>) => setComments({...comments, password: e.target.value})} placeholder="비밀번호" autoComplete="off" />
                 </div>
                 <textarea value={comments.comment} onChange={(e:ChangeEvent<HTMLTextAreaElement>) => setComments({...comments, comment: e.target.value})} />
                 

@@ -31,6 +31,10 @@ const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {
     const [profileInfo, setProfileInfo] = useState<boolean>(false);
     const [noticeInfo, setNoticeInfo] = useState<boolean>(false);
 
+    useEffect(() => {
+        setProfileInfo(false);
+        setNoticeInfo(false);
+    }, [router.query])
 
     const logOut = async () => {
         await removeTokenCookie();
