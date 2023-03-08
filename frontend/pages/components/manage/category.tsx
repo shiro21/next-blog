@@ -1,11 +1,11 @@
 import { api } from '@/pages/services/api';
-import { CategoryProps, SubCategoryProps } from '@/pages/services/interface';
+import { CategoryProps, CategoryTestProps, SubCategoryProps } from '@/pages/services/interface';
 import styles from '@/styles/manage.module.scss'
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
 const CategoryManage = () => {
 
-    const [categoryWrap, setCategoryWrap] = useState([]);
+    const [categoryWrap, setCategoryWrap] = useState<CategoryProps[]>([]);
     const [category, setCategory] = useState("");
     const [subCategory, setSubCategory] = useState("");
     const [listOpen, setListOpen] = useState(false);
@@ -89,6 +89,46 @@ const CategoryManage = () => {
         })
         .catch(err => console.log("SubCategory Create Err", err));
     }
+
+    const [updateOpen, setUpdateOpen] = useState("");
+    const [newName, setNewName] = useState("");
+    const categoryUpdate = (_id: string) => {
+        if (_id !== updateOpen) setUpdateOpen(_id);
+        else setUpdateOpen("");
+    }
+    const nameUpdate = (list: string, item: CategoryProps | SubCategoryProps) => {
+
+        if (newName === "") return alert("변경할 이름을 적어주세요.");
+        api.post("/edit/categoryUpdate", {_id: item._id, name: newName, list: list})
+        .then(async res => {
+            if (res.data.code === "y") {
+                console.log(categoryWrap)
+                const findIndex = categoryWrap.findIndex((ele: CategoryProps) => ele._id === item._id);
+                const subFindIndex = categoryWrap.findIndex((parents: CategoryProps) => parents._id === res.data.data.parent);
+                let childrenIndex: number | null = null;
+                let newCate: CategoryTestProps[] = categoryWrap;
+
+                // categoryWrap.findIndex(chil => chil._id === item._id);
+                for (let i = 0; i < newCate.length; i++) {                    
+                    for (let j = 0; j < newCate[i].children.length; j++) {
+
+                        if (newCate[i].children[j]._id === item._id) childrenIndex = j;
+                    }
+                }
+
+                let copyCategoryArray: CategoryProps[] = [...categoryWrap];
+                let copySubCategoryArray: CategoryTestProps[] = [...newCate];
+                
+                if (findIndex !== -1) copyCategoryArray[findIndex] = {...copyCategoryArray[findIndex], name: res.data.data.name, label: res.data.data.label}
+                if (subFindIndex !== -1 && childrenIndex !== null) copySubCategoryArray[subFindIndex].children[childrenIndex] = {...copySubCategoryArray[subFindIndex].children[childrenIndex], name: res.data.data.name, label: res.data.data.label }
+
+                setCategoryWrap(copyCategoryArray);
+                setNewName("");
+                setUpdateOpen("");
+            }
+        })
+        .catch(err => console.log("Category Update Err", err));
+    }
     
     return (
         <>
@@ -96,28 +136,37 @@ const CategoryManage = () => {
                 <h2>카테고리 관리</h2>
                 <div className={styles.category_contents}>
                     <ul>
-                        <li>전체보기
-                            <span>
-                                {/* 큰 카테고리 추가하기 */}
-                                <button>추가</button>
-                                {/* 카테고리 이름 수정하기 */}
-                                <button>수정</button>
-                            </span>
-                        </li>
+                        <li>전체보기</li>
                         {/* Main */}
                         {
                             categoryWrap.length > 0 && categoryWrap.map((item: CategoryProps, index) => (
                                 <React.Fragment key={index}>
                                     <li>
-                                        {item.name}
-                                        <span>
-                                            {/* 작은 카테고리 추가하기 */}
-                                            <button onClick={() => setSubStr(item.name)}>추가</button>
-                                            {/* 카테고리 이름 수정하기 */}
-                                            <button>수정</button>
-                                            {/* 카테고리 삭제하기 ( 데이터가 있을때는 불가능 ) */}
-                                            <button>삭제</button>
-                                        </span>
+                                        {
+                                            updateOpen === item._id ? (
+                                                <>
+                                                    <span><input type="text" value={newName} onChange={(e: ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)} /></span>
+                                                    <span className={styles.category_update}>
+                                                        {/* 카테고리 이름 수정하기 */}
+                                                        <button onClick={() => nameUpdate("main", item)}>수정</button>
+                                                        {/* 카테고리 수정 취소하기 */}
+                                                        <button onClick={() => setUpdateOpen("")}>취소</button>
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span>{item.name}</span>
+                                                    <span className={styles.category_update}>
+                                                        {/* 작은 카테고리 추가하기 */}
+                                                        <button onClick={() => setSubStr(item.name)}>추가</button>
+                                                        {/* 카테고리 이름 수정하기 */}
+                                                        <button onClick={() => categoryUpdate(item._id)}>수정</button>
+                                                        {/* 카테고리 삭제하기 ( 데이터가 있을때는 불가능 ) */}
+                                                        <button>삭제</button>
+                                                    </span>
+                                                </>
+                                            )
+                                        }
                                     </li>
                                     {/* Sub */}
                                     <ul>
@@ -133,13 +182,30 @@ const CategoryManage = () => {
                                         {
                                             item.children.length > 0 && item.children.map((sub: SubCategoryProps, subIndex) => (
                                                 <li key={subIndex}>
-                                                    {sub.name}
-                                                    <span>
-                                                        {/* 카테고리 이름 수정하기 */}
-                                                        <button>수정</button>
-                                                        {/* 카테고리 삭제하기 ( 데이터가 있을때는 불가능 ) */}
-                                                        <button>삭제</button>
-                                                    </span>
+                                                    {
+                                                        updateOpen === sub._id ? (
+                                                            <>
+                                                                <span><input type="text" value={newName} onChange={(e: ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)} /></span>
+                                                                <span className={styles.category_update}>
+                                                                    {/* 카테고리 이름 수정하기 */}
+                                                                    <button onClick={() => nameUpdate("sub", sub)}>수정</button>
+                                                                    {/* 카테고리 수정 취소하기 */}
+                                                                    <button onClick={() => setUpdateOpen("")}>취소</button>
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <span>{sub.name}</span>
+                                                                <span className={styles.category_update}>
+                                                                    {/* 카테고리 이름 수정하기 */}
+                                                                    <button onClick={() => categoryUpdate(sub._id)}>수정</button>
+                                                                    {/* 카테고리 삭제하기 ( 데이터가 있을때는 불가능 ) */}
+                                                                    <button>삭제</button>
+                                                                </span>
+                                                            </>
+                                                        )
+                                                    }
+                                                    
                                                 </li>
                                             ))
                                         }

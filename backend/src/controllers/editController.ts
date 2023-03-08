@@ -147,6 +147,66 @@ router.post("/categoryFind", async (req: Request, res: Response) => {
     .catch(err => console.log("Category Find Err", err));
 });
 
+router.post("/categoryUpdate", async (req: Request, res: Response) => {
+    const { _id, name, list } = req.body;
+
+    if (list === "main") {
+        models.Category.findOne({_id: _id})
+        .then(_update => {
+            if (_update === null) return;
+
+            _update.updatedAt = new Date();
+            _update.name = name;
+            _update.label = name;
+
+            _update.save()
+            .then(result => {
+                res.status(200).json({
+                    code: "y",
+                    data: result
+                })
+
+                models.SubCategory.find({parent: _id})
+                .then(_subUpdate => {
+                    if (_subUpdate === null) return;
+
+                    for (let i = 0; i < _subUpdate.length; i++) {
+                        let dLabel = _subUpdate[i].label?.split("/").at(-1);
+
+                        _subUpdate[i].updatedAt = new Date();
+                        _subUpdate[i].label = name + "/" + dLabel;
+                        _subUpdate[i].save();
+                    }
+                })
+                .catch(err => console.log("Sub Update Err", err));
+            })
+            .catch(err => console.log("Category Update Err", err));
+        })
+        .catch(err => console.log("Category Find Err", err));
+    } else if (list === "sub") {
+        models.SubCategory.findOne({_id: _id})
+        .then(_update => {
+            if (_update === null) return;
+
+            let dLabel = _update.label?.split("/")[0];
+
+            _update.updatedAt = new Date();
+            _update.name = name;
+            _update.label = dLabel + "/" + name;
+
+            _update.save()
+            .then(result => {
+                res.status(200).json({
+                    code: "y",
+                    data: result
+                })
+            })
+            .catch(err => console.log("SubCategory Update Err", err));
+        })
+        .catch(err => console.log("SubCategory Update Err", err));
+    }
+})
+
 // 글 생성
 router.post("/create", coverMulter.single("coverImage"), async (req: Request, res: Response) => {
     const item = req.body;

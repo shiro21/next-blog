@@ -76,6 +76,50 @@ export interface SubCategoryProps {
     updateData: boolean,
     leaf:       boolean
 }
+export interface CategoryTestProps {
+    _id:        string,
+    createdAt:  Date,
+    updatedAt:  Date,
+    isDeleted:  boolean,
+
+    name:       string,
+    label:      string,
+    subLabel:   string,
+    priority:   number,
+    entries:    number,
+    depth:      number,
+    parent:     string,
+    categoryInfo: {
+        image: "",
+        description: ""
+    },
+    opened:     boolean,
+    updateData: boolean,
+    leaf:       boolean,
+    children:   [
+        {
+            _id:        string,
+            createdAt:  Date,
+            updatedAt:  Date,
+            isDeleted:  boolean,
+        
+            name:       string,
+            label:      string,
+            subLabel:   string,
+            priority:   number,
+            entries:    number,
+            depth:      number,
+            parent:     string,
+            categoryInfo: {
+                image: "",
+                description: ""
+            },
+            opened:     boolean,
+            updateData: boolean,
+            leaf:       boolean
+        }
+    ] | []
+}
 
 // Post
 export interface PostListsProps {

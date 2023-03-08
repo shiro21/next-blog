@@ -290,7 +290,7 @@
                 padding: 0 1rem;
                 line-height: 60px;
                 border: 1px solid #DDD;
-                span {
+                .category_update {
                     float: right;
                     button {
                         padding: .24rem;
@@ -299,6 +299,9 @@
                         cursor: pointer;
                         &:last-child { margin-right: 0; }
                     }
+                }
+                span {
+                    input { width: calc(100% - 200px); }
                 }
             }
             > ul {
