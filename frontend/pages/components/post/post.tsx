@@ -116,8 +116,8 @@ const Post = ({ item }: { item: PostProps }) => {
                 {/* <span>
                     <FontAwesomeIcon icon={faHeartBroken} width={24} height={24} />
                 </span> */}
-                <span onClick={onLikeClick}>
-                    <FontAwesomeIcon icon={faHeart} width={24} height={24} />
+                <span onClick={onLikeClick} style={{width: "24px", height: "24px"}}>
+                    <FontAwesomeIcon icon={faHeart} style={{width: "100%", height: "100%"}} />
                 </span>
                 {
                     like !== null && <label htmlFor="heart">{like}</label>

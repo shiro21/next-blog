@@ -129,6 +129,19 @@ const CategoryManage = () => {
         })
         .catch(err => console.log("Category Update Err", err));
     }
+
+    const onDeleted = (item: CategoryProps | SubCategoryProps) => {
+        let result = confirm("정말 카테고리를 삭제하시겠습니까?");
+
+        if (result) {
+            api.post("/edit/categoryDelete", item)
+            .then(res => {
+                if (res.data.code === "n") return alert(res.data.message);
+                else if (res.data.code === "y") setCategoryWrap(res.data.data);
+            })
+            .catch(err => console.log("Category Deleted Err", err));
+        }
+    }
     
     return (
         <>
@@ -162,7 +175,7 @@ const CategoryManage = () => {
                                                         {/* 카테고리 이름 수정하기 */}
                                                         <button onClick={() => categoryUpdate(item._id)}>수정</button>
                                                         {/* 카테고리 삭제하기 ( 데이터가 있을때는 불가능 ) */}
-                                                        <button>삭제</button>
+                                                        <button onClick={() => onDeleted(item)}>삭제</button>
                                                     </span>
                                                 </>
                                             )
@@ -200,7 +213,7 @@ const CategoryManage = () => {
                                                                     {/* 카테고리 이름 수정하기 */}
                                                                     <button onClick={() => categoryUpdate(sub._id)}>수정</button>
                                                                     {/* 카테고리 삭제하기 ( 데이터가 있을때는 불가능 ) */}
-                                                                    <button>삭제</button>
+                                                                    <button onClick={() => onDeleted(sub)}>삭제</button>
                                                                 </span>
                                                             </>
                                                         )

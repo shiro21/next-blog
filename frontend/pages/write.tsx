@@ -71,7 +71,7 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
     const [preview, setPreview] = React.useState<{file: File | null, imagePreviewUrl: ArrayBuffer | string | null}[]>([]);
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        if (e.target.files === null) return;
+        if (e.target.files === null || e.target.files?.length === 0 || e.target.files === undefined) return;
 
         let reader = new FileReader();
         let file = e.target.files[0];
@@ -86,6 +86,7 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
     }
     const previewDeleted = () => {
         setPreview([{ file: null, imagePreviewUrl: null }]);
+        setPreview([]);
         setFiles(null)
     }
 
@@ -164,25 +165,28 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
                 {/* 에디터 */}
                 <Editor htmlStr={htmlStr} setHtmlStr={setHtmlStr} />
                 {/* 커버 이미지 */}
-                <div>
-                    <div>
-                        <div>이미지를 선택해주세요.</div>
-                        <input type="file" name="image" accept="image/*" onChange={onFileChange} />
-                    </div>
-                    <div>
-                        {
-                            preview.length > 0 && <div style={{position: "relative"}}>
-                                <span onClick={previewDeleted} style={{position: "absolute", right: ".5rem", top: ".5rem", cursor: "pointer"}}>
-                                    <FontAwesomeIcon icon={faDeleteLeft} />
+                <div style={{display: "flex", flexWrap: "wrap", alignItems: "center", border: "1px solid #DDD", padding: "1rem", marginBottom: "2rem", marginTop: "2rem"}}>
+                    <div style={{display: "flex"}}>
+                        <div style={{whiteSpace: "nowrap", paddingRight: "1rem"}}>이미지를 선택해주세요.</div>
+                        <div style={{position: "relative", width: "150px", height: "150px"}}>
+                            <div style={{display: "flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", position: "absolute", zIndex: "1", width: "100%", height: "100%", border: "1px solid #DDD", borderRadius: "8px"}}>이미지 선택</div>
+                            <input style={{position: "absolute", width: "100%", height: "100%", opacity: "0", zIndex: "3"}} type="file" name="image" accept="image/*" onChange={onFileChange} />
+                            {
+                                preview.length > 0 && <span onClick={previewDeleted} style={{position: "absolute", right: ".5rem", top: ".5rem", cursor: "pointer", width: "24px", height: "24px", zIndex: "4"}}>
+                                    <FontAwesomeIcon icon={faDeleteLeft} style={{width: "100%", height: "100%"}} />
                                 </span>
-                                {/* <Image unoptimized src={String(preview[0].imagePreviewUrl)} alt="대표 이미지" /> */}
-                                <img src={String(preview[0].imagePreviewUrl)} style={{width: "150px", height: "150px"}} alt="대표 이미지" />
-                            </div>
-                        }
+                            }
+                            {
+                                preview.length > 0 && <div style={{position: "absolute", zIndex: "1"}}>
+                                    {/* <Image unoptimized src={String(preview[0].imagePreviewUrl)} alt="대표 이미지" /> */}
+                                    <img src={String(preview[0].imagePreviewUrl)} style={{width: "150px", height: "150px"}} alt="대표 이미지" />
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
                 {/* 제출하기 */}
-                <button style={{ float: "right", fontSize: "1rem", fontWeight: "bold", marginTop: "1rem" }} onClick={onClick}>
+                <button style={{ float: "right", fontSize: "1rem", fontWeight: "bold", marginTop: "1rem", cursor: "pointer" }} onClick={onClick}>
                     등록하기
                 </button>
             </div>

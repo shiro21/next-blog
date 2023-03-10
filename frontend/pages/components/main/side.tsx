@@ -2,10 +2,11 @@ import styles from '@/styles/main.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { CategoryProps, LinkProps, SubCategoryProps } from '@/pages/services/interface';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CategoryProps, LinkProps, SubCategoryProps, UserProps } from '@/pages/services/interface';
 
 import { useAppSelector } from '@/store/store';
+import { api } from '@/pages/services/api';
 
 const Side = () => {
 
@@ -23,10 +24,22 @@ const Side = () => {
         setLinkWrap(linkSelector.link);
     }, [selector]);
 
+    const [globalUser, setGlobalUser] = useState<UserProps | null>(null);
+    const [globalBlock, setGlobalBlock] = useState(false);
+    const memories = useMemo(() => {
+        api.post("/user/find")
+        .then(res => {
+            if (res.data.code === "y") {
+                setGlobalUser(res.data.data);
+            }
+        })
+        .catch(err => console.log("User Find Err", err));
+    }, [globalBlock])
+
     return (
         <>
             <nav id="nav" className={`${styles.nav} ${ sideNav ? `${styles.nav0}` : ""}`}>
-                <h2><Link href={"/"}>블로그 제목</Link></h2>
+                <h2><Link href={"/"}>{globalUser && globalUser.id}의 블로그</Link></h2>
 
                 {/* 카테고리 */}
                 {

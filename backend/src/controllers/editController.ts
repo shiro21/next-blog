@@ -11,8 +11,6 @@ import { coverMulter, editMulter } from "../service/uploadService";
 
 const router = express.Router();
 
-
-
 router.post("/fileAdd", editMulter.array("multipartFiles"), async (req: Request, res: Response) => {
     
     const files: any | Express.Multer.File[] = req.files;
@@ -64,7 +62,7 @@ router.post("/categoryCreate", async (req: Request, res: Response) => {
 
     category.save()
     .then(() => {
-        models.Category.find()
+        models.Category.find({isDeleted: false})
         .populate("children")
         .then(category => {
             res.status(200).json({
@@ -79,7 +77,6 @@ router.post("/categoryCreate", async (req: Request, res: Response) => {
 
 router.post("/subCategoryCreate", async (req: Request, res: Response) => {
 
-    console.log(req.body);
     const item = req.body;
     
     let _id = new mongoose.Types.ObjectId();
@@ -107,7 +104,7 @@ router.post("/subCategoryCreate", async (req: Request, res: Response) => {
     subCategory.save()
     .then(subCategory => {
 
-        models.Category.findOne({_id: item.parent})
+        models.Category.findOne({_id: item.parent, isDeleted: false})
         .then(_category => {
             if (_category === null) return console.log("카테고리 없어서 나는 에러");
             if (_category.leaf === true) _category.leaf = false;
@@ -136,9 +133,14 @@ router.post("/subCategoryCreate", async (req: Request, res: Response) => {
 
 router.post("/categoryFind", async (req: Request, res: Response) => {
 
-    await models.Category.find()
+    const item = req.body;
+
+    await models.Category.find(item)
     .populate("children")
-    .then(arrCategory => {
+    .then((arrCategory: any) => {
+        for (let i = 0; i < arrCategory.length; i++) {
+            arrCategory[i].children = arrCategory[i].children.filter((item: any) => item.isDeleted !== true)
+        }
         res.status(200).json({
             code: "y",
             data: arrCategory
@@ -177,8 +179,24 @@ router.post("/categoryUpdate", async (req: Request, res: Response) => {
                         _subUpdate[i].label = name + "/" + dLabel;
                         _subUpdate[i].save();
                     }
+
                 })
                 .catch(err => console.log("Sub Update Err", err));
+                
+                models.Write.find({category: _id})
+                .then(_write => {
+                    if (_write === null) return;
+
+                    for (let i = 0; i < _write.length; i++) {
+                        _write[i].updatedAt = new Date();
+                        _write[i].label = name;
+
+                        if (!_write[i].subCategory) _write[i].subLabel = name;
+
+                        _write[i].save();
+                    }
+                })
+                .catch(err => console.log("Wirte Update Err", err));
             })
             .catch(err => console.log("Category Update Err", err));
         })
@@ -200,12 +218,142 @@ router.post("/categoryUpdate", async (req: Request, res: Response) => {
                     code: "y",
                     data: result
                 })
+
+                models.Write.find({subCategory: _id})
+                .then(_write => {
+                    if (_write === null) return;
+
+                    for (let i = 0; i < _write.length; i++) {
+                        _write[i].updatedAt = new Date();
+                        _write[i].subLabel = name;
+
+                        _write[i].save();
+                    }
+                })
+                .catch(err => console.log("Write Update Err", err));
             })
             .catch(err => console.log("SubCategory Update Err", err));
         })
         .catch(err => console.log("SubCategory Update Err", err));
     }
 })
+
+router.post("/categoryDelete", async (req: Request, res: Response) => {
+
+    const item = req.body;
+    
+    // 삭제됐는지 확인하기
+    let writeDeleted = false;
+    let subWriteDeleted = false;
+
+
+    if (item.name === item.label) {
+        await models.Write.find({ label: item.name, isDeleted: false })
+        .then(_confirm => {
+            if (_confirm === null) return;
+    
+            if (_confirm.length > 0) writeDeleted = true;
+    
+        })
+        .catch(err => console.log("Category Delete Confirm Err", err));
+    }
+
+    await models.Write.find({ label: item.name, subLabel: item.label, isDeleted: false })
+    .then(_confirm => {
+        if (_confirm === null) return;
+
+        if (_confirm.length > 0) writeDeleted = true;
+
+    })
+    .catch(err => console.log("Category Delete Confirm Err", err));
+
+    if (writeDeleted) {
+        return res.status(200).json({
+            code: "n",
+            message: "카테고리에 글을 모두 지워주세요."
+        })
+    }
+
+    await models.Category.findOne(item)
+    .then(async category => {
+        if (category === null) return;
+        else if (category.children.length > 0) {
+            for (let i = 0; i < category.children.length; i++) {
+                await models.SubCategory.findOne({_id: category.children[i], isDeleted: false})
+                .then(_sub => {
+                    console.log(_sub);
+                    if (_sub === null) return;
+
+                    subWriteDeleted = true;
+                })
+                .catch(err => console.log("SubCategory Load Err", err));
+
+                if (subWriteDeleted) return;
+            }
+        }
+    })
+    .catch(err => console.log("Category Err", err));
+
+    if (subWriteDeleted) {
+        return res.status(200).json({
+            code: "n",
+            message: "카테고리 삭제 요망"
+        })
+    }
+
+    if (item.name === item.label) {
+        models.Category.findOne({_id: item._id})
+        .then(_delete => {
+            if (_delete === null) return;
+
+            _delete.updatedAt = new Date();
+            _delete.isDeleted = true;
+
+            _delete.save()
+            .then(async result => {
+                await models.Category.find({isDeleted: false})
+                .populate("children")
+                .then(category => {
+                    res.status(200).json({
+                        code: "y",
+                        data: category
+                    })
+                })
+                .catch(err => console.log("Category Find Err", err));
+            })
+            .catch(err => console.log("Category Err", err));
+        })
+        .catch(err => console.log("Category Deleted Err", err));
+    } else {
+        models.SubCategory.findOne(item)
+        .then(_delete => {
+            if (_delete === null) return;
+
+            _delete.updatedAt = new Date();
+            _delete.isDeleted = true;
+
+            _delete.save()
+            .then(async result => {
+                await models.Category.find({isDeleted: false})
+                .populate("children")
+                .then((category: any) => {
+                    if (category === null) return;
+                    
+                    for (let i = 0; i < category.length; i++) {
+                        category[i].children = category[i].children.filter((item: any) => item.isDeleted !== true)
+                    }
+                    res.status(200).json({
+                        code: "y",
+                        data: category
+                    })
+                })
+                .catch(err => console.log("Category Find Err", err));
+            })
+            .catch(err => console.log("Category Err", err));
+        })
+    }
+    // await models.
+});
 
 // 글 생성
 router.post("/create", coverMulter.single("coverImage"), async (req: Request, res: Response) => {
@@ -262,6 +410,11 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
         const storage = getStorage();
         await getDownloadURL(ref(storage, file.path))
         .then((url: string) => {
+
+            let subCate;
+
+            if (subCategory) subCate = subCategory;
+            else subCate = mainCategory;
             
             const edit = new models.Write({
                 _id:        new mongoose.Types.ObjectId(),
@@ -272,7 +425,7 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
                 edit:       item.edit,
                 tag:        item.tagData,
                 category:   mainCategory,
-                subCategory:subCategory,
+                subCategory:subCate,
                 coverImage: url,
                 label:      mainLabel,
                 subLabel:   subLabel,
@@ -357,6 +510,17 @@ router.post("/update", coverMulter.single("coverImage"), async (req: Request, re
             })
             .catch(err => console.log("Entries Update Err", err));
 
+            await models.SubCategory.findOne({ label: _update.label + "/" + _update.subLabel })
+            .then(_sub => {
+                if (_sub === null) return;
+
+                _sub.updatedAt = new Date();
+                _sub.entries = _sub.entries - 1;
+
+                _sub.save();
+            })
+            .catch(err => console.log("SubCategory Update Err", err));
+
             await models.Category.findOne({ label: mainLabel })
             .then(_entry => {
 
@@ -364,7 +528,7 @@ router.post("/update", coverMulter.single("coverImage"), async (req: Request, re
 
                 // 새로운 카테고리로 교체
                 _update.category = _entry._id;
-                _update.label = _entry.label;
+                _update.label = _entry.name;
 
                 _entry.updatedAt = new Date();
                 _entry.entries = _entry.entries + 1;
@@ -376,7 +540,7 @@ router.post("/update", coverMulter.single("coverImage"), async (req: Request, re
         }
         if (_update.subLabel !== subLabel) {
 
-            await models.SubCategory.findOne({ label: _update.label })
+            await models.SubCategory.findOne({ label: _update.label + "/" +  _update.subLabel })
             .then(_entry => {
 
                 if (_entry === null) return;
@@ -395,7 +559,7 @@ router.post("/update", coverMulter.single("coverImage"), async (req: Request, re
 
                 // 새로운 카테고리로 교체
                 _update.subCategory = _subEntry._id;
-                _update.subLabel = _subEntry.label;
+                _update.subLabel = _subEntry.name;
 
                 _subEntry.updatedAt = new Date();
                 _subEntry.entries = _subEntry.entries + 1;
@@ -411,7 +575,11 @@ router.post("/update", coverMulter.single("coverImage"), async (req: Request, re
         _update.title       = item.title;
         _update.edit        = item.edit;
         _update.tag         = item.tagData;
-        _update.coverImage  = imageData
+        _update.coverImage  = imageData;
+        if (_update.label === item.select) {
+            _update.subCategory = _update.category;
+            _update.subLabel = item.select;
+        }
         
         _update.save()
         .then(update => {
@@ -449,10 +617,10 @@ router.post("/deleted", coverMulter.single("coverImage"), async (req: Request, r
         .catch(err => console.log("Category Load Err", err));
 
         if (_delete.label !== _delete.subLabel) {
-            console.log("삭제하러 들어왔음");
+
             await models.SubCategory.findOne({ label: `${_delete.label}/${_delete.subLabel}` })
             .then(result => {
-                console.log("Null 아님");
+
                 if (result === null) return;
 
                 result.updatedAt = new Date();

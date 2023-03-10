@@ -17,7 +17,7 @@ router.post("/categoryAndPosts",  async (req: Request, res: Response) => {
     let posts;
     let links;
 
-    await models.Category.find()
+    await models.Category.find({isDeleted: false})
     .populate("children")
     .then(arrCategory => {
         categories = arrCategory;
@@ -71,7 +71,7 @@ router.post("/params",  async (req: Request, res: Response) => {
         .catch(err => console.log("Write Find Err", err));
     }
 
-    await models.Category.find()
+    await models.Category.find({isDeleted: false})
     .populate("children")
     .then(arrCategory => {
         categories = arrCategory;

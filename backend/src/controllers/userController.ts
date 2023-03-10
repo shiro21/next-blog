@@ -98,6 +98,18 @@ router.post("/create", async (req: Request, res: Response) => {
     .catch(err => console.log("Register Create Err"));
 })
 
+router.post("/find", async (req: Request, res: Response) => {
+
+    models.User.find()
+    .then(result => {
+        res.status(200).json({
+            code: "y",
+            data: result[0]
+        })
+    })
+    .catch(err => console.log("Funder User Err", err));
+});
+
 router.post("/update", coverMulter.single("file"), async (req: Request, res: Response) => {
 
     const file: any | Express.Multer.File = req.file;
