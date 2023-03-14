@@ -28,7 +28,7 @@ const Post = ({ item }: { item: PostProps }) => {
         // console.log(selector.post.filter((post, index) => post.subLabel === item.subLabel));
         // setListData((prev: any) => [...prev.slice(-4), selector.post.filter((post, index) => post.subLabel === item.subLabel)]);
         setListData(selector.post.filter((post, index) => post.subLabel === item.subLabel).slice(-5));
-    }, [])
+    }, [item, selector, userData]);
 
     const [likeName, setLikeName] = useState("");
     const [like, setLike] = useState<number | null>(null);
@@ -82,7 +82,7 @@ const Post = ({ item }: { item: PostProps }) => {
             if(res.data.code === "y") setCommentWrap(res.data.data);
         })
         .catch(err => console.log("Comment Find Err", err));
-    }, []);
+    }, [item]);
 
     const onDeleted = async (item: CommentProps) => {
         
@@ -128,7 +128,7 @@ const Post = ({ item }: { item: PostProps }) => {
             {/* 카테고리 목록 5개 */}
             <div className={styles.category_list_wrap}>
                 <ul>
-                    <li><span>"{item.subLabel}"</span> 카테고리의 다른 글</li>
+                    <li><span>&quot;{item.subLabel}&quot;</span> 카테고리의 다른 글</li>
 
                     {
                         listData && listData.map((item, index) => (

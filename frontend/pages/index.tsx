@@ -30,8 +30,7 @@ function Main({ categoriesData, postsData, userData, linkData }: InferGetServerS
     dispatch(postsList(postsData.post));
     dispatch(userList(userData.user));
     dispatch(linksList(linkData.link));
-  }, []);
-
+  }, [dispatch, linkData, userData, postsData, categoriesData]);
 
   return (
     <>

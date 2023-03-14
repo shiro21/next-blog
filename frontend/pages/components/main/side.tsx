@@ -22,19 +22,24 @@ const Side = () => {
     useEffect(() => {
         setCategoryWrap(selector.category);
         setLinkWrap(linkSelector.link);
-    }, [selector]);
+    }, [selector, linkSelector]);
 
     const [globalUser, setGlobalUser] = useState<UserProps | null>(null);
     const [globalBlock, setGlobalBlock] = useState(false);
     const memories = useMemo(() => {
-        api.post("/user/find")
-        .then(res => {
-            if (res.data.code === "y") {
-                setGlobalUser(res.data.data);
-            }
-        })
-        .catch(err => console.log("User Find Err", err));
-    }, [globalBlock])
+
+        if (globalBlock === false) {
+            api.post("/user/find")
+            .then(res => {
+                if (res.data.code === "y") {
+                    setGlobalUser(res.data.data);
+                }
+            })
+            .catch(err => console.log("User Find Err", err));
+
+            setGlobalBlock(true);
+        }
+    }, [globalBlock]);
 
     return (
         <>

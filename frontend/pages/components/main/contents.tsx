@@ -33,7 +33,7 @@ const MainContents = () => {
         }
 
         setPostList(selector.post.slice(-10));
-    }, [selector]);
+    }, [selector, router.query]);
 
     const [login, setLogin] = useState("");
     const onLogin = () => {

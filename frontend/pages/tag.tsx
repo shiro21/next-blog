@@ -40,9 +40,7 @@ const Tag = () => {
             .catch(err => console.log("PostsList Find Err", err));
 
         })()
-        
-
-    }, [])
+    }, [dispatch])
 
     return (
         <>

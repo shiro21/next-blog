@@ -8,6 +8,7 @@ import { CategoryProps, PostProps, SubCategoryProps } from './services/interface
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
+import Image from 'next/legacy/image';
 
 const Editor = dynamic(() => import("@/pages/components/editor/editor"), { ssr: false }); // client 사이드에서만 동작되기 때문에 ssr false로 설정
 
@@ -42,13 +43,8 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
             setSelect(`${contents.label}/${contents.subLabel}`);
             setTitle(contents.title);
             setTagData(contents.tag);
-            // api.post("/edit/uploadDecoded", { image: contents.coverImage })
-            // .then(res => {
-
-            // })
-            // .catch(err => console.log("Upload Image Err", err));
         }
-    }, [])
+    }, [router]);
 
     const tagKeyCode = (e: React.KeyboardEvent<HTMLInputElement>) => {
         let key = e.code;
@@ -179,7 +175,8 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
                             {
                                 preview.length > 0 && <div style={{position: "absolute", zIndex: "1"}}>
                                     {/* <Image unoptimized src={String(preview[0].imagePreviewUrl)} alt="대표 이미지" /> */}
-                                    <img src={String(preview[0].imagePreviewUrl)} style={{width: "150px", height: "150px"}} alt="대표 이미지" />
+                                    {/* <Image src={String(preview[0].imagePreviewUrl)} style={{width: "150px", height: "150px"}} alt="대표 이미지" /> */}
+                                    <Image src={String(preview[0].imagePreviewUrl)} width={150} height={150} style={{borderRadius: "8px"}} alt="대표 이미지" />
                                 </div>
                             }
                         </div>

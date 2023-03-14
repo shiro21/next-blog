@@ -1,5 +1,5 @@
 import styles from '@/styles/manage.module.scss'
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Chart from './chartjs';
 import favi from '@/public/favi.ico'
@@ -32,7 +32,7 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
         })
         .catch(err => console.log("Statistics Err", err));
 
-    }, []);
+    }, [agent]);
 
     return (
         <>
@@ -99,7 +99,7 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
                                 <li key={index}>
                                     <Link href={`/${item._id}`}>
                                         <div className={styles.card_image}>
-                                            <img src={item.coverImage} alt={item.title} />
+                                            <Image src={item.coverImage} alt={item.title} layout="fill" />
                                         </div>
                                         <div className={styles.card_title}>{item.title}</div>
                                     </Link>

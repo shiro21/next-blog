@@ -2,6 +2,7 @@ import { userList } from '@/features/userSlice';
 import { api } from '@/pages/services/api';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import styles from '@/styles/manage.module.scss'
+import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { setTokenCookie } from '../login/tokenCookies';
@@ -45,7 +46,6 @@ const ProfileManage = () => {
         subscribe: selector.user.subscribe,
         file: selector.user.profile
     });
-    console.log(information.file);
 
     const onUpdate = async () => {
 
@@ -76,9 +76,11 @@ const ProfileManage = () => {
                 <h2>블로그 설정</h2>
                 <div className={styles.profile_box}>
                     <div className={styles.profile_image}>
-                        {
-                            preview.length > 0 ? <img src={String(preview[0].imagePreviewUrl)} alt={selector.user.id} /> : <img src={selector.user.profile} alt={selector.user.id} />
-                        }
+                        <div style={{position: "absolute", width: "300px", height: "100%", left: "50%", transform: "translateX(-50%)"}}>
+                            {
+                                preview.length > 0 ? <Image src={String(preview[0].imagePreviewUrl) ? String(preview[0].imagePreviewUrl) : selector.user.id} alt={selector.user.id} layout="fill" /> : <Image src={selector.user.profile} alt={selector.user.id} layout="fill" />
+                            }
+                        </div>
                         
                         <input type="file" accept="image/*" onChange={onFileChange} />
                         <div className={styles.profile_text_box}>

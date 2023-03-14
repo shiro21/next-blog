@@ -41,7 +41,7 @@ const Guest = ({ userData }: InferGetServerSidePropsType<typeof getServerSidePro
             if (res.data.code === "y") setGuestData(res.data.data);
         })
         .catch(err => console.log ("Guest Find Err", err));
-    }, [])
+    }, [dispatch, postSelector, userData]);
 
     const onGuestWrite = () => {
 

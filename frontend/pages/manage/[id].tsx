@@ -37,7 +37,7 @@ const Manage = ({ userData, postsData }: InferGetServerSidePropsType<typeof getS
 
         dispatch(userList(userData.user));
         dispatch(postsList(postsData.post));
-    }, [router])
+    }, [router, dispatch, userData, postsData])
 
     return (
         <>
