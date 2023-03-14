@@ -347,6 +347,7 @@ router.post("/notifyFind", async (req: Request, res: Response) => {
 
     models.Notify.find({isDeleted: false})
     .limit(30)
+    .sort({createdAt: -1})
     .then(result => {
         res.status(200).json({
             code: "y",

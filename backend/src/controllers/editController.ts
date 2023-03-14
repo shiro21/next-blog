@@ -654,6 +654,19 @@ router.post("/deleted", coverMulter.single("coverImage"), async (req: Request, r
         })
     })
     .catch(err => console.log("Write Delete Err", err));
+
+    models.Notify.find({owner: _id, isDeleted: false})
+    .then(_update => {
+        if (_update.length === 0) return;
+
+        for (const ele of _update) {
+            ele.updatedAt = new Date();
+            ele.isDeleted = true;
+            ele.save();
+        }
+    })
+    .catch(err => console.log("Notify Update Err", err));
+
 });
 
 router.post("/commentCreate", async (req: Request, res: Response) => {
