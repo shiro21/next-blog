@@ -24,6 +24,8 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
     // 이미지 업로드 핸들러, modules 설정보다 위에 있어야 정상 적용
     const imageHandler = () => {
         // file input 임의 생성
+        if (typeof document === undefined) return;
+
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
         input.setAttribute('accept', 'image/*');
