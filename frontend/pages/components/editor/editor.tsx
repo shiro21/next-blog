@@ -8,9 +8,9 @@ import { api } from '@/pages/services/api';
 import Image from 'next/image';
 import ReactQuill, { Quill } from 'react-quill';
 
-import ImageResize from 'quill-image-resize';
+// import ImageResize from 'quill-image-resize';
 // import ImageResize from 'quill-image-resize-module';
-Quill.register('modules/ImageResize', ImageResize);
+// Quill.register('modules/ImageResize', ImageResize);
 
 interface IEditor {
     htmlStr: string;
@@ -93,7 +93,7 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
                 image: imageHandler, // 이미지 tool 사용에 대한 핸들러 설정
             },
         },
-        ImageResize: { parchment: Quill.import('parchment') },
+        // ImageResize: { parchment: Quill.import('parchment') },
     }), [])
 
 
