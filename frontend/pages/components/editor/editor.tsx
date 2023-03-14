@@ -6,7 +6,8 @@ import 'react-quill/dist/quill.snow.css';
 import { RangeStatic } from 'quill';
 import { api } from '@/pages/services/api';
 import Image from 'next/image';
-import ReactQuill, { Quill } from 'react-quill';
+// import ReactQuill, { Quill } from 'react-quill';
+import ReactQuill from 'react-quill';
 
 // import ImageResize from 'quill-image-resize';
 // import ImageResize from 'quill-image-resize-module';
@@ -62,26 +63,6 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
 
     // useMemo를 사용하지 않고 handler를 등록할 경우 타이핑 할때마다 focus가 벗어남
     const modules = React.useMemo(() => ({
-        // toolbar: {
-        //     // container에 등록되는 순서대로 tool 배치
-        //     container: [
-        //         [{ 'font': [] }], // font 설정
-        //         [{ 'header': [1, 2, 3, 4, 5, 6, false] }], // header 설정
-        //         ['bold', 'italic', 'underline','strike', 'blockquote', 'code-block', 'formula'], // 굵기, 기울기, 밑줄 등 부가 tool 설정
-        //         [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}], // 리스트, 인덴트 설정
-        //         ['link', 'image', 'video'], // 링크, 이미지, 비디오 업로드 설정
-        //         [{ 'align': [] }, { 'color': [] }, { 'background': [] }], // 정렬, 글씨 색깔, 글씨 배경색 설정
-        //         ['clean'], // toolbar 설정 초기화 설정
-        //     ],
-
-        //     // custom 핸들러 설정
-        //     handlers: {
-        //         image: imageHandler, // 이미지 tool 사용에 대한 핸들러 설정
-        //     },
-        // },
-        // ImageResize: {
-        //     modules: ['Resize']
-        // }
         toolbar: {
             container: [
                 ['bold', 'italic', 'underline', 'strike', 'blockquote'],
