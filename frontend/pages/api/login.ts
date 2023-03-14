@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
+const login = (req: NextApiRequest, res: NextApiResponse) => {
 
     // console.log(req.body.token);
     // console.log(res.getHeader("get-cookie"))
@@ -17,3 +17,5 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     );
     res.status(200).json({ success: true });
 };
+
+export default login;

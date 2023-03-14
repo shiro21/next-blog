@@ -34,7 +34,7 @@ const PostPage = ({ categoriesData, postsData, userAgent, isMobile }: InferGetSe
 
     dispatch(categoriesList(categoriesData.category));
     dispatch(postsList(postsData.post));
-  }, [])
+  }, [router.query.id, userAgent])
   
   return (
       <>
