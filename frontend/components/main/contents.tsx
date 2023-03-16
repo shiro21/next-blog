@@ -1,5 +1,5 @@
 import styles from '@/styles/main.module.scss'
-import { PostProps } from '@/pages/services/interface';
+import { PostProps } from '@/services/interface';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
 // Components

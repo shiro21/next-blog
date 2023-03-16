@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { CategoryProps } from "@/pages/services/interface";
+import { CategoryProps } from "@/services/interface";
 
 const initialState = {
     status: "idle",

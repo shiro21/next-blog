@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import favi from '@/public/favi.ico'
 import Link from 'next/link';
-import { ApiUserProps } from '@/pages/services/apiInterface';
+import { ApiUserProps } from '@/services/apiInterface';
 
 const ManageSide = ({ userData }: { userData: ApiUserProps }) => {
     return (

@@ -1,5 +1,5 @@
-import LoginForm from "./components/login/loginForm";
-import Seo from "./components/Seo";
+import LoginForm from "../components/login/loginForm";
+import Seo from "../components/Seo";
 
 const Login = () => {
     return (

@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { ChangeEvent, useState } from 'react';
-import { LoginProps } from '@/pages/services/interface';
-import { api } from '@/pages/services/api';
+import { LoginProps } from '@/services/interface';
+import { api } from '@/services/api';
 import { useRouter } from 'next/router';
 import { setTokenCookie } from './tokenCookies';
 

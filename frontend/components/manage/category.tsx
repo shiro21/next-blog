@@ -1,5 +1,5 @@
-import { api } from '@/pages/services/api';
-import { CategoryProps, CategoryTestProps, SubCategoryProps } from '@/pages/services/interface';
+import { api } from '@/services/api';
+import { CategoryProps, CategoryTestProps, SubCategoryProps } from '@/services/interface';
 import styles from '@/styles/manage.module.scss'
 import React, { ChangeEvent, useEffect, useState } from 'react';
 

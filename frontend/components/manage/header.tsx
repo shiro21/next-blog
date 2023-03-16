@@ -6,12 +6,12 @@ import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
-import { ApiUserProps } from '@/pages/services/apiInterface';
+import { ApiUserProps } from '@/services/apiInterface';
 import { removeTokenCookie } from '../login/tokenCookies';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { api } from '@/pages/services/api';
-import { NotifyProps } from '@/pages/services/interface';
+import { api } from '@/services/api';
+import { NotifyProps } from '@/services/interface';
 import moment from 'moment';
 
 const ManageHeader = ({ userData }: { userData: ApiUserProps }) => {

@@ -1,5 +1,5 @@
-import { api } from '@/pages/services/api';
-import { LinkProps } from '@/pages/services/interface';
+import { api } from '@/services/api';
+import { LinkProps } from '@/services/interface';
 import styles from '@/styles/manage.module.scss'
 import { ChangeEvent, useEffect, useState } from 'react';
 

@@ -1,13 +1,13 @@
 
 import styles from '@/styles/main.module.scss'
-import Seo from '../components/Seo'
+import Seo from '../../components/Seo'
 
 // Component
-import Side from '../components/main/side'
-import MainContents from '../components/main/contents'
+import Side from '../../components/main/side'
+import MainContents from '../../components/main/contents'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { api } from '../services/api'
+import { api } from '../../services/api'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { useAppDispatch } from '@/store/store'
 import { categoriesList } from '@/features/categorySlice'

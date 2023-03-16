@@ -3,10 +3,10 @@ import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Chart from './chartjs';
 import favi from '@/public/favi.ico'
-import { PostProps, UserAgentProps } from '@/pages/services/interface';
+import { PostProps, UserAgentProps } from '@/services/interface';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
-import { api } from '@/pages/services/api';
+import { api } from '@/services/api';
 
 const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
 

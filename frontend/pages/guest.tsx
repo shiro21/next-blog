@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import Side from "./components/main/side";
-import Seo from "./components/Seo";
+import Side from "../components/main/side";
+import Seo from "../components/Seo";
 import styles from '@/styles/_guest.module.scss'
-import { api } from "./services/api";
-import { GuestProps } from "./services/interface";
+import { api } from "../services/api";
+import { GuestProps } from "../services/interface";
 import moment from "moment";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { categoriesList } from "@/features/categorySlice";

@@ -1,4 +1,4 @@
-import { CommentProps, PostProps, UserProps } from '@/pages/services/interface';
+import { CommentProps, PostProps, UserProps } from '@/services/interface';
 import styles from '@/styles/_post.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,7 @@ import moment from 'moment';
 // Components
 import PostLists from './postList';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { api } from '@/pages/services/api';
+import { api } from '@/services/api';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useRouter } from 'next/router';
 import { postsList } from '@/features/postSlice';

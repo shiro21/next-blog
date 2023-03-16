@@ -1,5 +1,5 @@
 import { userList } from '@/features/userSlice';
-import { api } from '@/pages/services/api';
+import { api } from '@/services/api';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import styles from '@/styles/manage.module.scss'
 import Image from 'next/legacy/image';

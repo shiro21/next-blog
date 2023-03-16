@@ -2,20 +2,20 @@ import styles from '@/styles/manage.module.scss'
 import { useRouter } from 'next/router';
 
 // Components
-import ManageHeader from "../components/manage/header";
-import ManageSide from "../components/manage/side";
-import HomeManage from "../components/manage/home";
-import Seo from '../components/Seo';
-import CategoryManage from '../components/manage/category';
-import LinkManage from '../components/manage/link';
-import WriteManage from '../components/manage/write';
-import ProfileManage from '../components/manage/profile';
-import { api } from '../services/api';
+import ManageHeader from "../../components/manage/header";
+import ManageSide from "../../components/manage/side";
+import HomeManage from "../../components/manage/home";
+import Seo from '../../components/Seo';
+import CategoryManage from '../../components/manage/category';
+import LinkManage from '../../components/manage/link';
+import WriteManage from '../../components/manage/write';
+import ProfileManage from '../../components/manage/profile';
+import { api } from '../../services/api';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch } from '@/store/store';
 import { userList } from '@/features/userSlice';
-import { UserAgentProps } from '../services/interface';
+import { UserAgentProps } from '../../services/interface';
 import { postsList } from '@/features/postSlice';
 
 const Manage = ({ userData, postsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {

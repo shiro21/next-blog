@@ -1,5 +1,5 @@
 import styles from '@/styles/_post.module.scss';
-import { PostProps } from "@/pages/services/interface";
+import { PostProps } from "@/services/interface";
 import Link from 'next/link';
 import moment from 'moment';
 

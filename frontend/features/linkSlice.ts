@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { LinkProps } from "@/pages/services/interface";
+import { LinkProps } from "@/services/interface";
 
 const initialState = {
     status: "idle",

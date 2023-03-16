@@ -11,7 +11,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { faker } from '@faker-js/faker';
-import { UserAgentProps } from '@/pages/services/interface';
+import { UserAgentProps } from '@/services/interface';
 import moment from 'moment';
 
 ChartJS.register(

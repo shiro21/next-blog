@@ -1,13 +1,13 @@
 
 // import { Inter } from '@next/font/google'
 import styles from '@/styles/main.module.scss'
-import Seo from './components/Seo'
+import Seo from '../components/Seo'
 import jwt from 'jsonwebtoken'
 
 // Component
-import Side from './components/main/side'
-import MainContents from './components/main/contents'
-import { api } from './services/api'
+import Side from '../components/main/side'
+import MainContents from '../components/main/contents'
+import { api } from '../services/api'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { useEffect } from 'react'
 import { categoriesList } from '@/features/categorySlice'

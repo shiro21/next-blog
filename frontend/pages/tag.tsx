@@ -2,10 +2,10 @@ import { categoriesList } from '@/features/categorySlice';
 import { useAppDispatch } from '@/store/store';
 import styles from '@/styles/_tag.module.scss'
 import React, { useEffect, useState } from 'react';
-import Side from './components/main/side';
-import Seo from "./components/Seo";
-import { api } from './services/api';
-import { PostProps } from './services/interface';
+import Side from '../components/main/side';
+import Seo from "../components/Seo";
+import { api } from '../services/api';
+import { PostProps } from '../services/interface';
 
 const Tag = () => {
 

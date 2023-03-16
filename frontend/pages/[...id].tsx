@@ -1,15 +1,15 @@
 import styles from '@/styles/_post.module.scss'
-import Side from './components/main/side';
-import Seo from "./components/Seo";
-import Post from "./components/post/post";
+import Side from '../components/main/side';
+import Seo from "../components/Seo";
+import Post from "../components/post/post";
 
-import { api } from './services/api';
+import { api } from '../services/api';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useAppDispatch } from '@/store/store';
 import { useEffect, useState } from 'react';
 import { categoriesList } from '@/features/categorySlice';
 import { postsList } from '@/features/postSlice';
-import { PostProps } from './services/interface';
+import { PostProps } from '../services/interface';
 import { useRouter } from 'next/router';
 
 const PostPage = ({ categoriesData, postsData, userAgent, isMobile }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -51,8 +51,6 @@ const PostPage = ({ categoriesData, postsData, userAgent, isMobile }: InferGetSe
       </>
   );
 }
-
-export default PostPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   
@@ -99,3 +97,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: { userData, categoriesData, postsData, userAgent, isMobile }
   }
 }
+
+export default PostPage;

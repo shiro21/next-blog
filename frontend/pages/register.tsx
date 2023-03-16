@@ -4,8 +4,8 @@ import favi from '@/public/favi.ico'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import React, { ChangeEvent, useState } from 'react';
-import { RegisterProps } from './services/interface';
-import { api } from './services/api';
+import { RegisterProps } from '../services/interface';
+import { api } from '../services/api';
 import { useRouter } from 'next/router';
 
 const Register = () => {

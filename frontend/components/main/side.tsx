@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
-import { CategoryProps, LinkProps, SubCategoryProps, UserProps } from '@/pages/services/interface';
+import { CategoryProps, LinkProps, SubCategoryProps, UserProps } from '@/services/interface';
 
 import { useAppSelector } from '@/store/store';
-import { api } from '@/pages/services/api';
+import { api } from '@/services/api';
 
 const Side = () => {
 
