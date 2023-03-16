@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 
 import 'react-quill/dist/quill.core.css'
 import 'react-quill/dist/quill.snow.css';
-import { RangeStatic } from 'quill';
+// import { RangeStatic } from 'quill';
 import { api } from '@/pages/services/api';
 import Image from 'next/image';
 // import ReactQuill, { Quill } from 'react-quill';
@@ -34,9 +34,9 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
                 if(file) formData.append("multipartFiles", file[0]);
     
                 // file 데이터 담아서 서버에 전달하여 이미지 업로드
-                let index: any;
+                let index: number = 0;
                 if (quillRef.current) {
-                    index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
+                    // index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
                     console.log("INDEX", index);
                 }
                 await api.post("/edit/fileAdd", formData)
