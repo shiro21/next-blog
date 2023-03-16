@@ -9,10 +9,6 @@ import Image from 'next/image';
 // import ReactQuill, { Quill } from 'react-quill';
 import ReactQuill from 'react-quill';
 
-// import ImageResize from 'quill-image-resize';
-// import ImageResize from 'quill-image-resize-module';
-// Quill.register('modules/ImageResize', ImageResize);
-
 interface IEditor {
     htmlStr: string;
     setHtmlStr: React.Dispatch<React.SetStateAction<string>>;
@@ -38,23 +34,23 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
                 if(file) formData.append("multipartFiles", file[0]);
     
                 // file 데이터 담아서 서버에 전달하여 이미지 업로드
-                await api.post("/edit/fileAdd", formData)
-                .then(edit => {
-                    if(quillRef.current) {
-                        // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
-                        const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
+                // await api.post("/edit/fileAdd", formData)
+                // .then(edit => {
+                //     if(quillRef.current) {
+                //         // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
+                //         const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
         
-                        const quillEditor = quillRef.current.getEditor();
-                        quillEditor.setSelection(index, 1);
+                //         const quillEditor = quillRef.current.getEditor();
+                //         quillEditor.setSelection(index, 1);
         
-                        quillEditor.clipboard.dangerouslyPasteHTML(
-                            index,
-                            // `<img style="width: 150px; height: 150px;" alt="helloworld" src=${edit.data.data} />`
-                            `<img src=${edit.data.data} />`
-                        );
-                    }
-                })
-                .catch(err => console.log("Edit Image Err", err));
+                //         quillEditor.clipboard.dangerouslyPasteHTML(
+                //             index,
+                //             // `<img style="width: 150px; height: 150px;" alt="helloworld" src=${edit.data.data} />`
+                //             `<img src=${edit.data.data} />`
+                //         );
+                //     }
+                // })
+                // .catch(err => console.log("Edit Image Err", err));
     
             }
         }

@@ -43,10 +43,10 @@ npm install @types/react-cookies
 <!-- 에디터 ( SummerNote -> react-quill을 많이 사용한다고 하여 체택 ) -->
 npm uninstall @types/summernote
 npm install react-quill
-npm install quill-image-resize-module-ts
+npm uninstall quill-image-resize-module-ts
 npm uninstall @looop/quill-image-resize-module-react
-npm install quill-image-resize-module
-npm install quill-image-resize
+npm uninstall quill-image-resize-module
+npm uninstall quill-image-resize
 
 <!-- 모먼트 -->
 npm install moment
