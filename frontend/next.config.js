@@ -5,7 +5,7 @@ const nextConfig = {
     domains: ["https://firebasestorage.googleapis.com", "firebasestorage.googleapis.com"],
     unoptimized: true
   },
-  output: "export"
+  distDir: 'build'
 }
 
 module.exports = nextConfig

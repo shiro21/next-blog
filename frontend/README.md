@@ -30,6 +30,9 @@ Sub Color: #B55727 ( 반전 컬러 )
 ### npm install
 npx @next/codemod next-image-to-legacy-image .
 
+<!-- getServerSideProps를 위ㄴ -->
+npm install --save @netlify/plugin-nextjs
+
 npm install @reduxjs/toolkit react-redux
 npm install --save-dev sass
 npm install axios
