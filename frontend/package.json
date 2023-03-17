@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next export",
-    "postbuild": "next-on-netlify"
+    "export": "next export"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
