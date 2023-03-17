@@ -32,6 +32,7 @@ npx @next/codemod next-image-to-legacy-image .
 
 <!-- getServerSideProps를 위ㄴ -->
 npm install --save @netlify/plugin-nextjs
+npm install -g netlify-cli
 
 npm install @reduxjs/toolkit react-redux
 npm install --save-dev sass
