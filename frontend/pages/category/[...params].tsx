@@ -21,7 +21,6 @@ const MainParams = ({ categoriesData, postsData }: InferGetServerSidePropsType<t
     dispatch(categoriesList(categoriesData.category));
     dispatch(postsList(postsData.post));
   }, [categoriesData.category, postsData.post, dispatch])
-  console.log("PARAMS");
 
   const router = useRouter();
   const [title, setTitle] = useState("");
