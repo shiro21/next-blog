@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 import 'react-quill/dist/quill.core.css'
 import 'react-quill/dist/quill.snow.css';
 import { RangeStatic } from 'quill';
-import { api } from '@/services/api';
+import { api, formApi } from '@/services/api';
 import Image from 'next/image';
 // import ReactQuill, { Quill } from 'react-quill';
 import ReactQuill from 'react-quill';
@@ -39,8 +39,9 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
                     index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
                     console.log("INDEX", index);
                 }
-                await api.post("/edit/fileAdd", formData)
+                await formApi.post("/edit/fileAdd", formData)
                 .then(edit => {
+                    console.log("입장");
                     if(quillRef.current) {
                         // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
                         // const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
