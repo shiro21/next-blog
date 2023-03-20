@@ -119,8 +119,8 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
 
     return (
         <>
-            <ReactQuill
-                ref={quillRef}
+            <ReQuill
+                forwardRef={quillRef}
                 theme="snow" 
                 modules={modules} 
                 formats={formats} 
