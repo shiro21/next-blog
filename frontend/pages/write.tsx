@@ -1,7 +1,7 @@
 import * as React from 'react';
 import dynamic from 'next/dynamic';
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
-import { api } from '../services/api';
+import { api, formApi } from '../services/api';
 // import { categoriesList } from '@/features/categorySlice';
 // import { useAppDispatch } from '@/store/store';
 import { CategoryProps, PostProps, SubCategoryProps } from '../services/interface';
