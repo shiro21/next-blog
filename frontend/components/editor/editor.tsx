@@ -1,27 +1,13 @@
 import * as React from 'react';
 import { NextPage } from 'next';
-import dynamic from 'next/dynamic'
 
 import 'react-quill/dist/quill.core.css'
 import 'react-quill/dist/quill.snow.css';
 import { RangeStatic } from 'quill';
-import { api, appApi, formApi } from '@/services/api';
+import { api } from '@/services/api';
+import Image from 'next/image';
 // import ReactQuill, { Quill } from 'react-quill';
 import ReactQuill from 'react-quill';
-
-// const ReQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-// 여기서부터 시작
-const ReQuill: any = dynamic(
-    async () => {
-      const { default: RQ } = await import("react-quill");
-  
-      return ({ forwardedRef, ...props } : {forwardedRef: any}) => <RQ ref={forwardedRef} {...props} />;
-    },
-    {
-      ssr: false
-    }
-);
 
 interface IEditor {
     htmlStr: string;
@@ -30,14 +16,7 @@ interface IEditor {
 
 const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
 
-
-
     const quillRef = React.useRef<ReactQuill>(null);
-    // const quillRef = React.useRef<any>(null);
-
-    React.useEffect(() => {
-        console.log("quillRef", quillRef)
-    }, [quillRef])
 
     // 이미지 업로드 핸들러, modules 설정보다 위에 있어야 정상 적용
     const imageHandler = () => {
@@ -47,30 +26,28 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
             input.setAttribute('type', 'file');
             input.setAttribute('accept', 'image/*');
             input.click();
-    
+
             input.onchange = async() => {
                 const file = input.files;
                 const formData = new FormData();
-    
+
                 if(file) formData.append("multipartFiles", file[0]);
-    
+
                 // file 데이터 담아서 서버에 전달하여 이미지 업로드
                 let index: any;
                 if (quillRef.current) {
                     index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
                     console.log("INDEX", index);
                 }
-                await appApi.post("/edit/fileAdd", formData)
+                await api.post("/edit/fileAdd", formData)
                 .then(edit => {
-                    console.log(quillRef);
-                    console.log(quillRef.current);
                     if(quillRef.current) {
                         // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
                         // const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
-        
+
                         const quillEditor = quillRef.current.getEditor();
                         quillEditor.setSelection(index, 1);
-        
+
                         quillEditor.clipboard.dangerouslyPasteHTML(
                             index,
                             // `<img style="width: 150px; height: 150px;" alt="helloworld" src=${edit.data.data} />`
@@ -79,10 +56,10 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
                     }
                 })
                 .catch(err => console.log("Edit Image Err", err));
-    
+
             }
         }
-        
+
     }
 
     // useMemo를 사용하지 않고 handler를 등록할 경우 타이핑 할때마다 focus가 벗어남
@@ -117,14 +94,14 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
 
     return (
         <>
-            <ReQuill
-                forwardRef={quillRef}
+            <ReactQuill
+                ref={quillRef}
                 theme="snow" 
                 modules={modules} 
                 formats={formats} 
                 value={htmlStr} 
                 placeholder='내용을 입력하세요.'
-                onChange={(content:any, delta:any, source:any, editor:any) => setHtmlStr(editor.getHTML())}
+                onChange={(content, delta, source, editor) => setHtmlStr(editor.getHTML())}
             />
         </>
     )
