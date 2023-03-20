@@ -5,10 +5,9 @@ import dynamic from 'next/dynamic'
 import 'react-quill/dist/quill.core.css'
 import 'react-quill/dist/quill.snow.css';
 import { RangeStatic } from 'quill';
-import { api, formApi } from '@/services/api';
+import { api, appApi, formApi } from '@/services/api';
 // import ReactQuill, { Quill } from 'react-quill';
 import ReactQuill from 'react-quill';
-import axios from 'axios';
 
 // const ReQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -61,9 +60,8 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
                     index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
                     console.log("INDEX", index);
                 }
-                await formApi.post("/edit/fileAdd", formData)
+                await appApi.post("/edit/fileAdd", formData)
                 .then(edit => {
-                    console.log("들어옴");
                     console.log(quillRef);
                     console.log(quillRef.current);
                     if(quillRef.current) {
