@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import "dotenv/config";
 import { multer } from "../config/plugins";
-const FirebaseStorage = require('multer-firebase-storage');
+// const FirebaseStorage = require('multer-firebase-storage');
 // import { FirebaseStorage } from "firebase/storage";
 import { fireStorage } from "../config/firebase";
 import { getDownloadURL, ref, getStorage, getMetadata } from "firebase/storage";
@@ -13,20 +13,29 @@ const router = express.Router();
 
 router.post("/fileAdd", editMulter.array("multipartFiles"), async (req: Request, res: Response) => {
     
-    const files: any | Express.Multer.File[] = req.files;
+    // const files: any | Express.Multer.File[] = req.files;
+    const files: Express.Multer.File[] = req.files as Express.Multer.File[];
 
     try {
         const storage = getStorage();
-        await getDownloadURL(ref(storage, files[0].path))
-        .then((url: any) => {
-            res.status(200).json({
-                code: "y",
-                data: url
-            })
-        })
-        .catch((err: any) => {
-            console.log("DownLoad Err", err)
+
+        const url = await getDownloadURL(ref(storage, files[0].path));
+
+        console.log(url);
+        res.status(200).json({
+            code: "y",
+            data: url
         });
+        // await getDownloadURL(ref(storage, files[0].path))
+        // .then((url: any) => {
+        //     res.status(200).json({
+        //         code: "y",
+        //         data: url
+        //     })
+        // })
+        // .catch((err: any) => {
+        //     console.log("DownLoad Err", err)
+        // });
     }
     catch(err) {
         console.log(err);
@@ -364,6 +373,8 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
 
     let mainLabel = item.select;
     let subLabel = item.select;
+
+    console.log("CREATE 생성 시작합니다.");
 
     if (item.select.indexOf("/") > -1) {
         mainLabel = item.select.split("/")[0];

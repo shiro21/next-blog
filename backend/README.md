@@ -22,8 +22,8 @@ npm install @types/jsonwebtoken
 npm install nodemailer
 npm install --save @types/nodemailer
 <!-- Multer -->
-npm install multer
-npm install @types/multer
+npm install multer@1.4.3
+npm install @types/multer@1.4.3
 <!-- Firebase -->
 npm install multer-firebase-storage
 npm install firebase-functions firebase-admin
@@ -77,3 +77,5 @@ firebase deploy --only hosting # deploy as alice@example.com
 firebase init
 firebase deploy
 firebase deploy --only hosting
+
+firebase emulators:start

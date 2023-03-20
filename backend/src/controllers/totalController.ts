@@ -1,13 +1,13 @@
 import express, { Request, Response, NextFunction } from "express";
 import "dotenv/config";
 import { multer } from "../config/plugins";
-const FirebaseStorage = require('multer-firebase-storage');
+// const FirebaseStorage = require('multer-firebase-storage');
 // import { FirebaseStorage } from "firebase/storage";
-import { fireStorage } from "../config/firebase";
-import { getDownloadURL, ref, getStorage } from "firebase/storage";
+// import { fireStorage } from "../config/firebase";
+// import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { mongoose } from "../config/plugins";
 import models from "../config/models";
-import { coverMulter, editMulter } from "../service/uploadService";
+// import { coverMulter, editMulter } from "../service/uploadService";
 
 const router = express.Router();
 
