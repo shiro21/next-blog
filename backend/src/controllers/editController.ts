@@ -1,8 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
 import "dotenv/config";
-import { multer } from "../config/plugins";
-// const FirebaseStorage = require('multer-firebase-storage');
-// import { FirebaseStorage } from "firebase/storage";
 import { fireStorage } from "../config/firebase";
 import { getDownloadURL, ref, getStorage, getMetadata } from "firebase/storage";
 import { mongoose } from "../config/plugins";
@@ -11,37 +8,40 @@ import { coverMulter, editMulter } from "../service/uploadService";
 
 const router = express.Router();
 
-router.post("/fileAdd", editMulter.array("multipartFiles"), async (req: Request, res: Response) => {
-    
-    // const files: any | Express.Multer.File[] = req.files;
-    const files: Express.Multer.File[] = req.files as Express.Multer.File[];
+// Firebase와 Multer가 연동되지 않아서 프론트에서 직접 보내기로 함.
+// router.post("/fileAdd", editMulter.array("multipartFiles"), async (req: Request, res: Response) => {
 
-    try {
-        const storage = getStorage();
+//     const files: Express.Multer.File[] = req.files as Express.Multer.File[];
+//     // // const files: any | Express.Multer.File[] = req.files;
 
-        const url = await getDownloadURL(ref(storage, files[0].path));
+//     console.log(files);
 
-        console.log(url);
-        res.status(200).json({
-            code: "y",
-            data: url
-        });
-        // await getDownloadURL(ref(storage, files[0].path))
-        // .then((url: any) => {
-        //     res.status(200).json({
-        //         code: "y",
-        //         data: url
-        //     })
-        // })
-        // .catch((err: any) => {
-        //     console.log("DownLoad Err", err)
-        // });
-    }
-    catch(err) {
-        console.log(err);
-    }
+//     try {
+//         const storage = getStorage();
 
-});
+//         const url = await getDownloadURL(ref(storage, files[0].path));
+
+//         console.log(url);
+//         res.status(200).json({
+//             code: "y",
+//             data: url
+//         });
+//         // await getDownloadURL(ref(storage, files[0].path))
+//         // .then((url: any) => {
+//         //     res.status(200).json({
+//         //         code: "y",
+//         //         data: url
+//         //     })
+//         // })
+//         // .catch((err: any) => {
+//         //     console.log("DownLoad Err", err)
+//         // });
+//     }
+//     catch(err) {
+//         console.log(err);
+//     }
+
+// });
 
 router.post("/categoryCreate", async (req: Request, res: Response) => {
     const item = req.body;
@@ -123,9 +123,12 @@ router.post("/subCategoryCreate", async (req: Request, res: Response) => {
             _category.save()
             .then(_children => {
 
-                models.Category.find()
+                models.Category.find({isDeleted: false})
                 .populate("children")
                 .then(category => {
+                    for (let i = 0; i < category.length; i++) {
+                        category[i].children = category[i].children.filter((item: any) => item.isDeleted !== true)
+                    }
                     res.status(200).json({
                         code: "y",
                         data: category
@@ -367,14 +370,12 @@ router.post("/categoryDelete", async (req: Request, res: Response) => {
 // 글 생성
 router.post("/create", coverMulter.single("coverImage"), async (req: Request, res: Response) => {
     const item = req.body;
-    const file: any | Express.Multer.File = req.file;
+    // const file: any | Express.Multer.File = req.file;
     let mainCategory: mongoose.Types.ObjectId | undefined = undefined;
     let subCategory: mongoose.Types.ObjectId | undefined = undefined;
 
     let mainLabel = item.select;
     let subLabel = item.select;
-
-    console.log("CREATE 생성 시작합니다.");
 
     if (item.select.indexOf("/") > -1) {
         mainLabel = item.select.split("/")[0];
@@ -418,67 +419,97 @@ router.post("/create", coverMulter.single("coverImage"), async (req: Request, re
     }
 
     try {
-        const storage = getStorage();
-        await getDownloadURL(ref(storage, file.path))
-        .then((url: string) => {
 
-            let subCate;
+        let subCate;
 
-            if (subCategory) subCate = subCategory;
-            else subCate = mainCategory;
+        if (subCategory) subCate = subCategory;
+        else subCate = mainCategory;
+
+        const edit = new models.Write({
+            _id:        new mongoose.Types.ObjectId(),
+            createdAt:  new Date(),
+            updatedAt:  new Date(),
             
-            const edit = new models.Write({
-                _id:        new mongoose.Types.ObjectId(),
-                createdAt:  new Date(),
-                updatedAt:  new Date(),
-                
-                title:      item.title,
-                edit:       item.edit,
-                tag:        item.tagData,
-                category:   mainCategory,
-                subCategory:subCate,
-                coverImage: url,
-                label:      mainLabel,
-                subLabel:   subLabel,
-                owner:      item.owner
-            });
+            title:      item.title,
+            edit:       item.edit,
+            tag:        item.tagData,
+            category:   mainCategory,
+            subCategory:subCate,
+            coverImage: item.coverImage,
+            label:      mainLabel,
+            subLabel:   subLabel,
+            owner:      item.owner
+        });
 
-            edit.save()
-            .then(result => {
-                res.status(200).json({
-                    code: "y"
-                });
-            })
-            .catch(err => console.log("Edit Create Err", err));
+        edit.save()
+        .then(result => {
+            res.status(200).json({
+                code: "y"
+            });
         })
+        .catch(err => console.log("Edit Create Err", err));
+
+        // const storage = getStorage();
+        // await getDownloadURL(ref(storage, file.path))
+        // .then((url: string) => {
+
+        //     let subCate;
+
+        //     if (subCategory) subCate = subCategory;
+        //     else subCate = mainCategory;
+            
+        //     const edit = new models.Write({
+        //         _id:        new mongoose.Types.ObjectId(),
+        //         createdAt:  new Date(),
+        //         updatedAt:  new Date(),
+                
+        //         title:      item.title,
+        //         edit:       item.edit,
+        //         tag:        item.tagData,
+        //         category:   mainCategory,
+        //         subCategory:subCate,
+        //         coverImage: url,
+        //         label:      mainLabel,
+        //         subLabel:   subLabel,
+        //         owner:      item.owner
+        //     });
+
+        //     edit.save()
+        //     .then(result => {
+        //         res.status(200).json({
+        //             code: "y"
+        //         });
+        //     })
+        //     .catch(err => console.log("Edit Create Err", err));
+        // })
     } catch (err) {
         console.log(err);
     }
     
 });
 
-router.post("/uploadDecoded", async (req: Request, res: Response) => {
+// router.post("/uploadDecoded", async (req: Request, res: Response) => {
     
-    const { image } = req.body;
-    const storage = getStorage();
+//     const { image } = req.body;
+//     const storage = getStorage();
 
-    const data = ref(storage, image);
+//     const data = ref(storage, image);
 
-    await getMetadata(data)
-    .then(meta => {
-        res.status(200).json({
-            code: "y",
-            data: meta
-        });
-    })
-    .catch(err => console.log("MetaData Err", err));
+//     await getMetadata(data)
+//     .then(meta => {
+//         res.status(200).json({
+//             code: "y",
+//             data: meta
+//         });
+//     })
+//     .catch(err => console.log("MetaData Err", err));
 
-});
+// });
 
 router.post("/update", coverMulter.single("coverImage"), async (req: Request, res: Response) => {
 
     const item = req.body;
-    const file: any | Express.Multer.File = req.file;
+    // const file: any | Express.Multer.File = req.file;
 
     let mainLabel = item.select;
     let subLabel = item.select;
@@ -490,18 +521,18 @@ router.post("/update", coverMulter.single("coverImage"), async (req: Request, re
         subLabel = item.select.split("/").at(-1);
     }
 
-    const storage = getStorage();
-    let imageData = "";
+    // const storage = getStorage();
+    // let imageData = "";
     
-    if (file !== undefined) {
-        await getDownloadURL(ref(storage, file.path))
-        .then((url: string) => {
-            imageData = url;
-        })
-        .catch(err => console.log("Image Err", err));
-    } else {
-        imageData = item.oldImage;
-    }
+    // if (file !== undefined) {
+    //     await getDownloadURL(ref(storage, file.path))
+    //     .then((url: string) => {
+    //         imageData = url;
+    //     })
+    //     .catch(err => console.log("Image Err", err));
+    // } else {
+    //     imageData = item.oldImage;
+    // }
 
     await models.Write.findOne({_id: item._id})
     .then(async _update => {
@@ -586,7 +617,7 @@ router.post("/update", coverMulter.single("coverImage"), async (req: Request, re
         _update.title       = item.title;
         _update.edit        = item.edit;
         _update.tag         = item.tagData;
-        _update.coverImage  = imageData;
+        _update.coverImage  = item.coverImage;
         if (_update.label === item.select) {
             _update.subCategory = _update.category;
             _update.subLabel = item.select;

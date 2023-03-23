@@ -7,7 +7,6 @@ import { multer } from "../config/plugins";
 // import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { mongoose } from "../config/plugins";
 import models from "../config/models";
-// import { coverMulter, editMulter } from "../service/uploadService";
 
 const router = express.Router();
 
@@ -20,6 +19,9 @@ router.post("/categoryAndPosts",  async (req: Request, res: Response) => {
     await models.Category.find({isDeleted: false})
     .populate("children")
     .then(arrCategory => {
+        for (let i = 0; i < arrCategory.length; i++) {
+            arrCategory[i].children = arrCategory[i].children.filter((item: any) => item.isDeleted !== true)
+        }
         categories = arrCategory;
     })
     .catch(err => console.log("Category Find Err", err));

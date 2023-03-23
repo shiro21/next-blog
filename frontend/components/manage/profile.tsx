@@ -1,11 +1,15 @@
 import { userList } from '@/features/userSlice';
-import { api } from '@/services/api';
+import { api, formApi } from '@/services/api';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import styles from '@/styles/manage.module.scss'
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { setTokenCookie } from '../login/tokenCookies';
+
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage, storageRef, _uuid } from "@/services/firebase";
+const { v4: uuidv4 } = require("uuid");
 
 interface InfoProps {
     _id: string,
@@ -23,7 +27,7 @@ const ProfileManage = () => {
 
     // const [files, setFiles] = React.useState<File | null>(null);
     const [preview, setPreview] = React.useState<{file: File | null, imagePreviewUrl: ArrayBuffer | string | null}[]>([]);
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files === null) return;
 
         let reader = new FileReader();
@@ -37,6 +41,18 @@ const ProfileManage = () => {
 
         // setFiles(file);
         setInformation({...information, file: file})
+
+        // firebase로 이미지 등록하기
+        const imageRef = ref(storageRef, "cover");
+        const spaceRef = ref(imageRef, _uuid + "-" + file.name);
+
+        await uploadBytes(spaceRef, file)
+        .then(async snap => {
+            await getDownloadURL(ref(storage, snap.metadata.fullPath))
+            .then(_url => {
+                setInformation({...information, file: _url})
+            })
+        })
     }
 
     const [information, setInformation] = useState<InfoProps>({
@@ -48,19 +64,10 @@ const ProfileManage = () => {
     });
 
     const onUpdate = async () => {
-
-        const formData = new FormData();
-
-        formData.append("_id", information._id);
-        formData.append("blog_name", information.blog_name);
-        formData.append("nick_name", information.nick_name);
-        formData.append("subscribe", information.subscribe);
-        if (information.file) formData.append("file", information.file);
-
-        await api.post("/user/update", formData)
+ 
+        await api.post("/user/update", information)
         .then(async res => {
             if (res.data.code === "y") {
-                console.log(res.data.data);
                 dispatch(userList(res.data.data));
                 await setTokenCookie(res.data.token);
 

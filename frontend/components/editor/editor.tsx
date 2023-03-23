@@ -8,6 +8,8 @@ import { api, formApi } from '@/services/api';
 import Image from 'next/image';
 // import ReactQuill, { Quill } from 'react-quill';
 import ReactQuill from 'react-quill';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage, storageRef, _uuid } from '@/services/firebase';
 
 interface IEditor {
     htmlStr: string;
@@ -29,34 +31,63 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
 
             input.onchange = async() => {
                 const file = input.files;
-                const formData = new FormData();
 
-                if(file) formData.append("multipartFiles", file[0]);
-
-                // file 데이터 담아서 서버에 전달하여 이미지 업로드
                 let index: any;
                 if (quillRef.current) {
                     index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
                     console.log("INDEX", index);
                 }
-                await formApi.post("/edit/fileAdd", formData)
-                .then(edit => {
-                    console.log("입장");
-                    if(quillRef.current) {
+
+                if (!file) return;
+                
+                const imageRef = ref(storageRef, "cover");
+                const spaceRef = ref(imageRef, _uuid + "-" + file[0].name);
+        
+                await uploadBytes(spaceRef, file[0])
+                .then(async snap => {
+                    await getDownloadURL(ref(storage, snap.metadata.fullPath))
+                    .then(_url => {
+
                         // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
                         // const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
+                        if (!quillRef.current) return;
 
                         const quillEditor = quillRef.current.getEditor();
                         quillEditor.setSelection(index, 1);
 
                         quillEditor.clipboard.dangerouslyPasteHTML(
                             index,
-                            // `<img style="width: 150px; height: 150px;" alt="helloworld" src=${edit.data.data} />`
-                            `<img src=${edit.data.data} />`
+                            // `<img style="width: 150px; height: 150px;" alt="helloworld" src=${_url} />`
+                            `<img src=${_url} alt=${file[0].name} />`
                         );
-                    }
+                    })
                 })
-                .catch(err => console.log("Edit Image Err", err));
+
+
+                // const formData = new FormData();
+
+                // if(file) formData.append("multipartFiles", file[0]);
+
+                // file 데이터 담아서 서버에 전달하여 이미지 업로드
+
+                // await formApi.post("/edit/fileAdd", formData)
+                // .then(edit => {
+                //     console.log("입장");
+                //     if(quillRef.current) {
+                //         // 현재 Editor 커서 위치에 서버로부터 전달받은 이미지 불러오는 url을 이용하여 이미지 태그 추가
+                //         // const index = (quillRef.current.getEditor().getSelection() as RangeStatic).index;
+
+                //         const quillEditor = quillRef.current.getEditor();
+                //         quillEditor.setSelection(index, 1);
+
+                //         quillEditor.clipboard.dangerouslyPasteHTML(
+                //             index,
+                //             // `<img style="width: 150px; height: 150px;" alt="helloworld" src=${edit.data.data} />`
+                //             `<img src=${edit.data.data} />`
+                //         );
+                //     }
+                // })
+                // .catch(err => console.log("Edit Image Err", err));
 
             }
         }

@@ -4,24 +4,30 @@ import "dotenv/config";
 
 const app = express();
 
-import http from "http";
-const server = http.createServer(app);
+import cors from "cors";
+app.use(cors({ origin: "*", credentials: true }));
 
-app.use(function(req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
+app.use(function(req, res: Response, next) {
+    // res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST");
     next();
 });
+
+import http from "http";
+const server = http.createServer(app);
+
 // import useragent from "express-useragent";
 // import AgentData from "./service/userAgent";
 // app.use(useragent.express());
 // app.use(AgentData);
 
 
-import cors from "cors";
-app.use(cors({ origin: "*", credentials: true }));
+
 
 import bodyParser from "body-parser";
 app.use(bodyParser.json());
@@ -63,7 +69,7 @@ mongoose.connection.once("open", () => {
 import routes from "./config/routes";
 app.use("/api", routes);
 
-const PORT = process.env.NODE_PORT || 4000;
+const PORT = process.env.NODE_PORT || 4002;
 
 server.listen(PORT, () => {
     const message = `

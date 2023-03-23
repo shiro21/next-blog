@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
+import { ref, getStorage } from "firebase/storage";
+const { v4: uuidv4 } = require("uuid");
 import 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -19,4 +20,8 @@ const firebaseConfig = {
 const fireApp = initializeApp(firebaseConfig);
 const fireStorage = getStorage(fireApp);
 
-export { fireApp, fireStorage };
+const storage = getStorage();
+const storageRef = ref(storage)
+let _uuid = uuidv4();
+
+export { fireApp, fireStorage, storage, storageRef, _uuid };

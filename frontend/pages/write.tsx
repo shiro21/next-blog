@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Image from 'next/legacy/image';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage, storageRef, _uuid } from '@/services/firebase';
 
 const Editor = dynamic(() => import("@/components/editor/editor"), { ssr: false }); // client 사이드에서만 동작되기 때문에 ssr false로 설정
 
@@ -63,9 +65,9 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
         }
     }
 
-    const [files, setFiles] = React.useState<File | null>(null);
+    const [files, setFiles] = React.useState<String | null>(null);
     const [preview, setPreview] = React.useState<{file: File | null, imagePreviewUrl: ArrayBuffer | string | null}[]>([]);
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
         if (e.target.files === null || e.target.files?.length === 0 || e.target.files === undefined) return;
 
@@ -78,7 +80,18 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
 
         reader.readAsDataURL(file);
 
-        setFiles(file);
+        // firebase로 이미지 등록하기
+        const imageRef = ref(storageRef, "cover");
+        const spaceRef = ref(imageRef, _uuid + "-" + file.name);
+
+        await uploadBytes(spaceRef, file)
+        .then(async snap => {
+            await getDownloadURL(ref(storage, snap.metadata.fullPath))
+            .then(_url => {
+                setFiles(_url)
+                setOldFile(null);
+            })
+        })
     }
     const previewDeleted = () => {
         setPreview([{ file: null, imagePreviewUrl: null }]);
@@ -87,27 +100,43 @@ const Write: NextPage = ({ userData, categoriesData }: InferGetServerSidePropsTy
     }
 
     const onClick = async () => {
-        const formData = new FormData();
+        // const formData = new FormData();
 
         if (userData.user === null) {
             alert("로그인 해주세요.");
             return router.push("/login");
-        } else if (select === "" || title === "" || tagData.length === 0 || htmlStr === "" || (files === null && oldFile === null)) return alert("뭔가 하나 빠졌습니다 !!!");
-        formData.append("select", select);
-        formData.append("title", title);
-        for (let i = 0; i < tagData.length; i++) formData.append("tagData", tagData[i]);
-        formData.append("edit", htmlStr);
-        formData.append("owner", userData.user._id);
-        if (files) formData.append("coverImage", files);
+        } else if (select === "선택해주세요." || select === "" || title === "" || tagData.length === 0 || htmlStr === "" || (files === null && oldFile === null)) return alert("뭔가 하나 빠졌습니다 !!!");
+        // formData.append("select", select);
+        // formData.append("title", title);
+        // for (let i = 0; i < tagData.length; i++) formData.append("tagData", tagData[i]);
+        // formData.append("edit", htmlStr);
+        // formData.append("owner", userData.user._id);
+        // if (files) formData.append("coverImage", files);
 
         let route;
+        let formData;
         if (postData) {
             route = "/edit/update"
-            formData.append("_id", postData);
-            if (oldFile) formData.append("oldImage", oldFile);
+            // formData.append("_id", postData);
+            formData = {
+                _id: postData
+            }
+            // if (oldFile) formData.append("oldImage", oldFile);
         } else {
             route = "/edit/create"
         }
+
+        if (oldFile) formData = { ...formData, coverImage: oldFile }
+        else formData = { ...formData, coverImage: files }
+        formData = {
+            ...formData,
+            select: select,
+            title: title,
+            edit: htmlStr,
+            tagData: tagData,
+            owner: userData.user._id,
+        }
+        console.log(formData);
 
         await api.post(route, formData)
         .then(res => {

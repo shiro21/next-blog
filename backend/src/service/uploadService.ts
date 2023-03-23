@@ -22,6 +22,7 @@ export const editMulter = multer({
         credentials: {
             clientEmail: process.env.FIRE_CEMAIL,
             privateKey: (process.env.FIRE_PRIVATE_KEY !== undefined ? process.env.FIRE_PRIVATE_KEY.replace(/\\n/g, '\n') : ""),
+            // privateKey: process.env.FIRE_PRIVATE_KEY,
             projectId: process.env.FIRE_PROJECT_ID
         },
         directoryPath:`edit`,

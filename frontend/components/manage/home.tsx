@@ -99,7 +99,9 @@ const HomeManage = ({ agent }: { agent: UserAgentProps[] }) => {
                                 <li key={index}>
                                     <Link href={`/${item._id}`}>
                                         <div className={styles.card_image}>
-                                            <Image src={item.coverImage} alt={item.title} layout="fill" />
+                                            {
+                                                item.coverImage && <Image src={item.coverImage} alt={item.title} layout="fill" />
+                                            }
                                         </div>
                                         <div className={styles.card_title}>{item.title}</div>
                                     </Link>

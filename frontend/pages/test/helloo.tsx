@@ -20,8 +20,8 @@ const Test = () => {
 
   const test = async () => {
 
-    const fire = fireStorage;
     let uid = uuidv4();
+    fireStorage
     const storage = getStorage();
 
     const storageRef = ref(storage)

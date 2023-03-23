@@ -1,3 +1,6 @@
+### TEST중
+gsutil cors set cors.json gs://blog-next-c18f3.appspot.com
+
 ### npm install
 <!-- Cors -->
 npm install --save-dev @types/cors
@@ -27,12 +30,25 @@ npm install @types/multer@1.4.3
 <!-- Firebase -->
 npm install multer-firebase-storage
 npm install firebase-functions firebase-admin
+<!-- busboy -->
+npm install busboy
+npm install @types/busboy
+npm install busboy-firebase
+<!-- Formidable -->
+npm install formidable-serverless
+<!-- Multiparty -->
+npm install multiparty
+npm install @types/multiparty
 <!-- Moment -->
 npm install moment
 npm install moment-timezone
 <!-- User Agent -->
 npm install express-useragent
 npm install @types/express-useragent
+<!-- UUID -->
+npm install uuid
+<!-- GOOGLE CLOUD -->
+npm install @google-cloud/functions-framework
 
 <!-- 아직 미설치 -->
 npm uninstall @firebase/app-types
