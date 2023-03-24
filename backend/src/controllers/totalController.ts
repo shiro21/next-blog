@@ -10,7 +10,7 @@ import models from "../config/models";
 
 const router = express.Router();
 
-router.post("/categoryAndPosts",  async (req: Request, res: Response) => {
+router.post("/categoryAndPosts", async (req: Request, res: Response) => {
 
     let categories;
     let posts;
@@ -76,6 +76,9 @@ router.post("/params",  async (req: Request, res: Response) => {
     await models.Category.find({isDeleted: false})
     .populate("children")
     .then(arrCategory => {
+        for (let i = 0; i < arrCategory.length; i++) {
+            arrCategory[i].children = arrCategory[i].children.filter((item: any) => item.isDeleted !== true)
+        }
         categories = arrCategory;
     })
     .catch(err => console.log("Category Find Err", err));
