@@ -90,7 +90,7 @@ const Side = () => {
                 </ul>
 
                 <div>
-                    검색 관련..할까 말까
+                    {/* 검색 관련..할까 말까 */}
                 </div>
             </nav>
             <button onClick={mobileSideOpen} className={styles.side_button_wrap} type="button">
